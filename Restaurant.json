@@ -1,0 +1,1058 @@
+{
+    "@context": "http://schema.org",
+    "@type": "Restaurant",
+    "@id": "4-CZKELFETJBEBG6",
+    "priceRange": "S$4.00 - S$33.00",
+    "hasMenu": {
+        "@type": "Menu",
+        "name": "Saap Saap Thai - Jewel Changi Airport #B1-299",
+        "description": "Food Delivery Menu",
+        "hasMenuSection": [
+            {
+                "@type": "MenuSection",
+                "name": "*NEW* Super Single Combo ",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 *NEW* Super Single Combo ",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "Super Single Combo 1",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "15.30",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Super Single Combo 2",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "18.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Super Single Combo 4",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "18.00",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Super Single Combo 3",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "18.70",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Thai Snack Delights Box",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Thai Snack Delights Box",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "Ultimate Thai Snack Delights",
+                        "description": "12 Chicken Wings, 12 Crispy Fried Fish & 12 Fried Chicken Balls OR Beef Balls",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "33.00",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Thai Snack Delights Box A",
+                        "description": "4 Chicken Wings & 4 Chicken Balls OR Beef Balls",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "8.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Snack Box B",
+                        "description": "4 Chicken Wings, 4pcs Crispy Fish & 4 Fried Chicken Balls OR Beef Balls",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "15.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Snack Box C",
+                        "description": "4 Chicken Wings,4 Fried Chicken Balls or Beef Balls & Crispy Chicken Cutlet",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "15.90",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Thai Signature Noodles",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Thai Signature Noodles",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "N1. Signature Australian Beef Boat Noodle",
+                        "description": "Beef slices (served medium) cooked to succulent perfection in authentic Thai Boat Soup",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N2. Beef Brisket Boat Noodle with Tendon",
+                        "description": "Perfectly braised Beef Brisket & Tendons",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N3. Beef Boat Noodle Deluxe",
+                        "description": "An assortment of beef like brisket, beef slices, tendon and beef balls",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "11.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N4. Signature Chicken Boat Noodle",
+                        "description": "Tender chicken slices and balls cooked to succulent perfection!",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N5. Thai Grilled Chicken Noodle",
+                        "description": "Savory & sweet springy noodles with Grilled tender chicken slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N8. Thai Grilled Chicken Boat Noodle",
+                        "description": "Juicy thai grilled chicken slices and chicken balls cooked to succulent perfection",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N10. Beef Ball Boat Noodle Soup",
+                        "description": "Juicy beef balls cooked to succulent perfection!",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.50",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N11. Chicken Ball Boat Noodle Soup",
+                        "description": "Premium chicken balls cooked to succulent perfection!",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.50",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Classic Rice Dishes",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Classic Rice Dishes",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "RD1. Kra Pao Basil Double Delight with Rice",
+                        "description": "Sauteed Basil with tender chicken slices and beef slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "13.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "RD2. Thai Garlic Black Pepper Double Beef w Rice",
+                        "description": "Double portions of sauteed beef slices in Thai garlic black pepper sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "13.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "RD3. Tom Yum Sauteed Double Chicken with Rice",
+                        "description": "Double portions of chicken cubes sauteed in Tangy Tom Yam sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "13.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R2. Thai Grilled Chicken with Rice",
+                        "description": "Authentic Chicken boneless grilled to a moist and tender perfection (non-spicy)",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R3. 'Kra-Pao' Basil Chicken with Rice",
+                        "description": "Sauteed Basil with tender Chicken slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R5. 'Kra-Pao' Basil Beef Slice with Rice",
+                        "description": "Sauteed Basil with tender beef slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R7. 'Kra-Pao' Seafood Caribbean with Rice",
+                        "description": "Sauteed Basil with an assortment of seafood",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "11.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R8. Green Curry Chicken with Rice",
+                        "description": "Aromatic, spicy, sweet and savory green curry served with tender Chicken pieces",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R9. Green Curry Beef with Rice",
+                        "description": "Aromatic, spicy, sweey and savory green curry served with tender beef slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R10. Green Curry Seafood Caribbean with Rice",
+                        "description": "Aromatic, spicy, sweet and savory green curry served with generous seafood toppings",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "11.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R11. Beef Brisket & Tendon with Rice",
+                        "description": "Generous servings of tender beef tendons and brisket",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R12. Beef  Deluxe with Rice",
+                        "description": "An assortment of beef brisket & tendons, beef slices & beef balls",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "11.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "G1. Thai Garlic Black Pepper Chicken with Rice",
+                        "description": "Sauteed Chicken in Thai Garlic Black Pepper sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "G2. Thai Garlic Black Pepper Beef with Rice",
+                        "description": "Sauteed Beef Slices in Thai Garlic Black Pepper Sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Y1. Tom Yam Sauteed Chicken with Rice",
+                        "description": "Chicken Slices Sauteed in tangy Tom Yam sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Y2. Tom Yam Sauteed Beef with Rice",
+                        "description": "Beef slices sauteed in tangy Tom Yam sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Thai Crispy Chicken",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Thai Crispy Chicken",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "C1. Wings & Drumettes",
+                        "description": "Succulent wings and drumettes comes in either original/tangy saap saap sauce/mixed sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "8.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "C2. Fried Fish",
+                        "description": "Crispy-fried fish comes in either original/tangy saap saap sauce/mixed sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "8.90",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Thai Crispy Chicken Specials",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Thai Crispy Chicken Specials",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "N6. Thai Crispy Chicken Noodle",
+                        "description": "Savory & sweet springy noodles with crispy chicken slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N12. Thai Crispy Chicken Boat Noodle",
+                        "description": "Crispy chicken slices topped with classic boat noodle soup",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R1. Thai Crispy Chicken with Rice",
+                        "description": "Thai-seasoned chicken pieces fried till crispy and crunchy",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R4. 'Kra-Pao' Basil Crispy Chicken with Rice",
+                        "description": "Sauteed Basil with crispy-fried chicken pieces",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "G3. Thai Garlic Black Pepper Crispy Chicken with Rice",
+                        "description": "Crispy-fried chicken pieces in Thai black pepper sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Y3. Crispy Chicken Rice with Tom Yam Sauce",
+                        "description": "Crispy-fried chicken drizzled with Tom Yam sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Y5. Saap Saap Crispy Chicken Wings with Rice",
+                        "description": "Succulently-fried wings comes with original/tangy saap saap sauce/mixed sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "T8. Thai Crispy Chicken Tom Yam Soup",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup loaded with crispy chicken slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "S4. 'Yum' Thai Salad Glass Noodle with Crispy Chicken",
+                        "description": "Crispy chicken slices and glass noodles drizzled with tasty Thai salad sauce and topped with carrot, diced tomatos, spring onion and red chilli",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "7.50",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Thai Crispy Fish Select",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Thai Crispy Fish Select",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "RD4. Fish & Chicks w Rice",
+                        "description": "Succulently-fried wings comes with original/tangy saap saap sauce/mixed sauce and crispy fried fish",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "13.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "RD5. Black Pepper Beef w Crispy Fish",
+                        "description": "Sauteed beef slices in Thai garlic black pepper sauce topped fish crispy fried fish!",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "13.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "T9. Crispy Fish with Tom Yum Soup",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup with a subtle hint of seafood sweetness",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N13. Crispy Fish Boat Noodle Soup",
+                        "description": "Crispy Fish cooked to succulent perfection in authentic Thai Boat Soup",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "N14. Crispy Chicken Noodle (Dry/Soup)",
+                        "description": "Savory & sweet springy noodles topped with crispy fried fish",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "R6. 'Kra-Pao' Basil Crispy Fish with Rice",
+                        "description": "Sauteed Basil with crispy-fried fish",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "G4. Thai Garlic Black Pepper Crispy Fish with Rice",
+                        "description": "Sauteed crispy-fried fish in Thai black pepper sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Y4. Crispy Fish Rice with Tom Tam Sauce",
+                        "description": "Crispy-fried fish drizzled with Tom Yam sauce",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "S6. 'Yum' Thai Salad Glass Noodle with Crispy Fish",
+                        "description": "Crispy-fried fish and glass noodles drizzled with tasty Thai salad sauce and topped with carrot, diced tomatos, spring onion and red chilli",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "7.50",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Tom Yum Soup (Noodles/Rice)",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Tom Yum Soup (Noodles/Rice)",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "T1. Seafood Caribbean",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup with a subtle hint of seafood sweetness",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "11.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "T2. Beef Slice",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup loaded with succulent beef slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "T3. Chicken Slice",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup loaded with tender chicken slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "T4. Fish Slice",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup loaded with marinated fish slices",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "T5. Prawns",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup loaded with fresh peeled prawns",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "T6. Beef Brisket & Tendon",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup loaded with tender briskets and tendons",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "T7. Beef Deluxe",
+                        "description": "Authentic Thai tom yum sweet, sour and spicy soup loaded with assortment of beef like brisket, beef slices, tendon and beef balls",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "11.90",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "'Yum' Thai Salad (Glass Noodle)",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 'Yum' Thai Salad (Glass Noodle)",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "S1. 'Yum' Seafood Caribbean",
+                        "description": "Fresh seafood and glass noodles drizzled with tasty Thai salad sauce and topped with carrot, diced tomatos, spring onion and red chilli",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "9.50",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "S2. 'Yum' Beef Slice",
+                        "description": "Tender beef slices and glass noodles drizzled with tasty Thai salad sauce and topped with carrot, diced tomatos, spring onion and red chilli",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "7.50",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "S3. 'Yum' Fish Slice",
+                        "description": "Marinated fish slices and glass noodles drizzled with tasty Thai salad sauce and topped with carrot, diced tomatos, spring onion and red chilli",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "7.50",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "S5. 'Yum' Grilled Chicken",
+                        "description": "Sweet & savory grilled chicken slices and glass noodles drizzled with tasty Thai salad sauce and topped with carrot, diced tomatos, spring onion and red chilli",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "7.50",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "S7 'Yum' Chicken Slice",
+                        "description": "Sweet & savory chicken slices and glass noodles drizzled with tasty Thai salad sauce and topped with carrot, diced tomatos, spring onion and red chilli",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "7.50",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Violet Coconut Sago",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Violet Coconut Sago",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "VS1. Pomelo Mango Sago",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "6.50",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "VS2. Sweet Potato Sago",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "6.50",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "VS3. Red Tea Jelly Sago",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "6.50",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Thai Iced Milk Tea Signature",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Thai Iced Milk Tea Signature",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "CT2. Cha Mango Cube Cute",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "5.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "CT3. Cha Red Tea Jelly",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "CT4. Cha Honey Pop Pop",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.90",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Thai Beverages",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Thai Beverages",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "Original Iced Thai Milk Tea",
+                        "description": "Creamy, rich and popular thai style beverage",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.10",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Iced Thai Green Milk Tea",
+                        "description": "Perfectly-infused green tea flavour and scent thai style milk tea",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.10",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Fresh Iced Lime Juice",
+                        "description": "Refreshing and zesty drink to recharge your senses",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.10",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Iced Lime Thai Tea",
+                        "description": "Refreshing, sweet, tart taste drink to awake your senses",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.10",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Lemongrass Drink",
+                        "description": "Feel rejuventated with our delicious Lemongrass Drink",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.10",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Honey Lime Drink",
+                        "description": "Cooling and refreshing",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.10",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Iced Thai Soda",
+                        "description": "Fizzy carbonated drink",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.10",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Original Hot Thai Milk Tea",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Hot Thai Black Tea",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Hot Lime Black Tea",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Hot Honey Black Tea",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Coke",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Coke light",
+                        "description": "320ml",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Green tea",
+                        "description": "325ml",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Sprite",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "Mineral Water",
+                        "description": "500ml",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "3.40",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Family Feast",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Family Feast",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "Family Feast",
+                        "description": "The family feast includes 4 mains, 4 drinks, 1 Yum Thai Salad & 2 Mango Tango Classic.",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "84.90",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Sticky Rice",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Sticky Rice",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "D1. Mango Tango Classic",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "7.30",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "D2. Mango Sweet Heart",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "7.80",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            },
+            {
+                "@type": "MenuSection",
+                "name": "Thai Sparkling Soda Specials",
+                "description": "Saap Saap Thai - Jewel Changi Airport #B1-299 Thai Sparkling Soda Specials",
+                "hasMenuItem": [
+                    {
+                        "@type": "MenuItem",
+                        "name": "SS1. Soda Mango Nectar",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.90",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "SS2. Soda Honey Pomelo",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.60",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "SS3. Soda Violet Honey Pop",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.60",
+                            "priceCurrency": "SGD"
+                        }
+                    },
+                    {
+                        "@type": "MenuItem",
+                        "name": "SS4. Soda Violet Pomelo",
+                        "description": "",
+                        "offers": {
+                            "@type": "Offer",
+                            "price": "4.60",
+                            "priceCurrency": "SGD"
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": 4.6,
+        "ratingCount": 616
+    },
+    "image": "https://d1sag4ddilekf6.cloudfront.net/compressed_webp/merchants/4-CZKELFETJBEBG6/hero/7556c283aff0498eb05a9abc725a3655_1622858612491465510.webp",
+    "servesCuisine": [
+        "Thai,Noodles,Halal"
+    ],
+    "name": "Saap Saap Thai - Jewel Changi Airport #B1-299"
+}
