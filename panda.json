@@ -1,0 +1,2200 @@
+{
+    "status_code": 200,
+    "data": {
+        "id": 9683,
+        "code": "v3iw",
+        "accepts_instructions": true,
+        "address": "G/F, Wah Lee Building, 216 Queen's Road West, Sai Ying Pun",
+        "address_line2": "",
+        "budget": 1,
+        "deals": [],
+        "chain": {
+            "id": 0,
+            "name": "",
+            "main_vendor_id": 0,
+            "url_key": "",
+            "code": ""
+        },
+        "city": {
+            "id": 14397,
+            "name": "Hong Kong",
+            "url_key": "hong-kong"
+        },
+        "constraints": [],
+        "cuisines": [
+            {
+                "id": 35,
+                "name": "Sandwich",
+                "url_key": "sandwich",
+                "main": false
+            },
+            {
+                "id": 36,
+                "name": "Japanese",
+                "url_key": "japanese",
+                "main": true
+            },
+            {
+                "id": 39,
+                "name": "Asian",
+                "url_key": "asian",
+                "main": false
+            },
+            {
+                "id": 53,
+                "name": "Drinks",
+                "url_key": "beverages",
+                "main": false
+            },
+            {
+                "id": 115,
+                "name": "Western",
+                "url_key": "western",
+                "main": false
+            },
+            {
+                "id": 1078,
+                "name": "Bubble Tea",
+                "url_key": "bubble-tea",
+                "main": false
+            }
+        ],
+        "customer_phone": "+85223866664",
+        "delivery_fee_source": "dps",
+        "description": "",
+        "discounts": [],
+        "distance": 12483.965,
+        "dynamic_pricing": {
+            "service_fee": {
+                "total": 0,
+                "type": "percentage",
+                "setup_value": 2.5,
+                "max_value": 5
+            },
+            "adjustments": {
+                "current_discount": 0,
+                "next_discount": {
+                    "is_free": true,
+                    "difference": 0,
+                    "discount": 0,
+                    "show_message": false,
+                    "progress_percentage": 100
+                }
+            },
+            "fleet_utilization": 0,
+            "customer_tag": {
+                "variant": "Original",
+                "tag": "New",
+                "subscription_id": null
+            },
+            "price_reason": null
+        },
+        "experiments": [
+            {
+                "experiment_id": "watson-popular-toppings",
+                "experiment_variation": "Control",
+                "is_participating": true
+            },
+            {
+                "experiment_id": "recommendation-products-elements",
+                "experiment_variation": "Control",
+                "is_participating": false
+            }
+        ],
+        "favorite": null,
+        "has_delivery_provider": true,
+        "hero_image": "https://images.deliveryhero.io/image/fd-hk/LH/v3iw-hero.jpg",
+        "hero_listing_image": "https://images.deliveryhero.io/image/fd-hk/LH/v3iw-listing.jpg",
+        "is_active": true,
+        "is_delivery_enabled": true,
+        "is_pickup_enabled": true,
+        "is_premium": false,
+        "is_preorder_enabled": true,
+        "is_promoted": false,
+        "is_test": false,
+        "is_vat_disabled": false,
+        "is_vat_included_in_product_price": false,
+        "is_vat_visible": false,
+        "is_vat_included": false,
+        "is_voucher_enabled": true,
+        "is_super_vendor": false,
+        "latitude": 22.28680038,
+        "location_event": null,
+        "logo": "",
+        "longitude": 114.1439972,
+        "loyalty_percentage_amount": 0,
+        "loyalty_program_enabled": false,
+        "menus": [
+            {
+                "ab_sorting_applied": false,
+                "id": 37862,
+                "code": "",
+                "name": "Main Menu",
+                "description": "",
+                "type": "delivery",
+                "opening_time": "00:00:00",
+                "closing_time": "23:59:00",
+                "menu_categories": [
+                    {
+                        "id": 331276,
+                        "code": "1577e9b6-09af-4ecf-83e2-b3cc5b3edd02",
+                        "name": "Sandwiches",
+                        "description": "",
+                        "products": [
+                            {
+                                "id": 91349063,
+                                "code": "8dadf4e8-54df-45f2-80fd-9e0f437b7a03",
+                                "name": "Cheese  And Pickles Hotdog",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349063.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098448,
+                                        "code": "d3a90ed1-b2a7-4d07-b4a2-d72926103003",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 48,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349064,
+                                "code": "827c91f4-9725-4577-bca3-4fcb243df887",
+                                "name": "Bolognese And Melted Cheese Jumbo Hotdog",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349064.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098449,
+                                        "code": "d4ef5221-b2eb-4bb8-a74f-723dc309555f",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 55,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349065,
+                                "code": "afd630f0-f12e-4729-8517-bd22605a051a",
+                                "name": " Melted Cheese Seven Spice Spicy Sauce Hotdog",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349065.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098450,
+                                        "code": "5772267a-7492-418c-b5e4-c5b99cef6e25",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 55,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349066,
+                                "code": "20c2869a-5b26-4d2a-9cde-c65963cb8dab",
+                                "name": "Bacon Cheese And Scrambled Eggs",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349066.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098452,
+                                        "code": "cc678800-87e2-4955-946e-2500d3e61b12",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 48,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "tags": [
+                                    "popular"
+                                ],
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349067,
+                                "code": "9c169409-f59f-4c2d-a403-1752d7895312",
+                                "name": "Black Truffle Scrambled Eggs",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349067.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098451,
+                                        "code": "ce6103dc-fa8b-4ddc-bdc3-2306bfae11f4",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 48,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349071,
+                                "code": "d7d920f7-b54d-4ef4-b99a-efbd5f95780b",
+                                "name": "Avocado Tuna Salad",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349071.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098454,
+                                        "code": "7ef64bad-1150-4397-9730-b79a942c9cb1",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 48,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "tags": [
+                                    "popular"
+                                ],
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349072,
+                                "code": "267e943a-923b-4e43-8864-c2a155579458",
+                                "name": "Japanese Style Berkshire Pork Pan-Fried Noodles ",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349072.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098453,
+                                        "code": "03aa1b04-610c-4d0b-af20-e45f5c92b812",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 53,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349075,
+                                "code": "5a4bb507-4219-4c2d-b898-027b8afa19c8",
+                                "name": "Japanese Style Deep-Fried Chicken",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349075.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098456,
+                                        "code": "402ccd9b-d41c-4589-a554-ec880438194d",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 48,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "tags": [
+                                    "popular"
+                                ],
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349076,
+                                "code": "0219bb4b-3ba1-438c-9fa0-00818730cf80",
+                                "name": "Pork Chop With Fried Egg Sandwich",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349076.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098455,
+                                        "code": "843963e6-232f-4716-afb9-c3489a40ecb5",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 57,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "tags": [
+                                    "popular"
+                                ],
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349077,
+                                "code": "7ade7a11-6bd6-4c82-8028-e98170afd350",
+                                "name": "Japanese Style Deep-Fried Fish Fillet",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349077.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098457,
+                                        "code": "7da3753a-01f3-4ff0-95d0-4898da18c303",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 53,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349080,
+                                "code": "de9caccb-b0fb-4d44-a7d8-8c729e469537",
+                                "name": "Black Truffle Beef Burger",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349080.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098459,
+                                        "code": "a4fa1ca4-d470-4099-a65b-0f60136abc67",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 65,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "tags": [
+                                    "popular"
+                                ],
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91349081,
+                                "code": "a674f672-c01d-48d5-93b7-a76043482eb8",
+                                "name": "Vegetables Potato Salad",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91349081.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92098458,
+                                        "code": "d7daae68-820a-4f2a-87fd-d248e273689c",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 43,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 161413489,
+                                "code": "81217550-1aa5-4769-9c12-7d406efdd27a",
+                                "name": "Japanese Ginger Pork Sandwich",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/161413489.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 162608780,
+                                        "code": "276187e8-e732-4786-8917-daf25d7dc06d",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 48,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 163499021,
+                                "code": "e171f2ee-5717-4c53-8032-3764c7cc65c3",
+                                "name": "Shrimp Sandwich ",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/163499021.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 164786749,
+                                        "code": "6ee3d150-7188-4d47-8518-3548d54de0c9",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 65,
+                                        "topping_ids": [
+                                            28326564
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28326564,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            }
+                        ],
+                        "is_popular_category": false
+                    },
+                    {
+                        "id": 331277,
+                        "code": "1ad72dee-93c4-4220-8fc9-d286822ebdc7",
+                        "name": "Snacks",
+                        "description": "",
+                        "products": [
+                            {
+                                "id": 3170755,
+                                "code": "e8be0c1b-faeb-4a39-b8fb-219a14eb5143",
+                                "name": "Fried Squid",
+                                "description": "For ref only: Deep-fried squid ring coated with flour",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170755.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581543,
+                                        "code": "a2e0e6c9-64eb-4596-be36-7c1222a58527",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 24,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170757,
+                                "code": "69d23390-da40-431f-a2a4-973d67a17e6a",
+                                "name": "Deep-fried Chicken",
+                                "description": "For ref only: Deep-fried battered chicken",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170757.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581545,
+                                        "code": "48a5a0c6-4bcc-4753-95d2-d19d22df5cbb",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "3 pcs",
+                                        "price": 24,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 46681860,
+                                        "code": "7154f6bf-d55d-466a-9404-4d97bb5e9023",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "5 pcs",
+                                        "price": 30,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170759,
+                                "code": "a5839e77-05f1-4a35-abcf-4336f40b4958",
+                                "name": "Potato Salad Cup",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170759.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581547,
+                                        "code": "7a7b2bec-9d9c-4f22-bb5b-ea33f41b0ce0",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 18,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170760,
+                                "code": "07a338db-8180-4bd7-b0ca-dc2020dee164",
+                                "name": "Mentaiko Chicken Wing",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170760.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581548,
+                                        "code": "3735df0c-955c-4326-adb2-0ec081c733d0",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "1 pc",
+                                        "price": 24,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 46738414,
+                                        "code": "28b22deb-1894-4f6c-a39a-721408dfc670",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "2 pcs",
+                                        "price": 31,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3239560,
+                                "code": "5bd3215f-9047-4f47-a9a5-6fcf3a314523",
+                                "name": "Cup of Corn",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3239560.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3668670,
+                                        "code": "a6aebebc-461f-4a14-bd76-f765bde4aaf5",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 15,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3239561,
+                                "code": "f95ad158-6983-4e78-a323-11ad6e6491f5",
+                                "name": "Japanese Pumpkin Croquette",
+                                "description": "For ref only: Japanese style deep-fried breaded croquette filled with japanese pumpkin",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3239561.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3668671,
+                                        "code": "92b40707-fe0c-4cde-951a-c29c3bb22265",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 24,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 16050539,
+                                "code": "8adcfb0e-2326-4a15-b8c7-db05ba4166cd",
+                                "name": "Fried Cheese Roll",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/16050539.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 16651410,
+                                        "code": "945f6f01-a53d-4c39-b041-c797c2234118",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "3 pcs",
+                                        "price": 24,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 16651415,
+                                        "code": "ba938b8e-2c00-473c-accb-8d3510b894e0",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "5 pcs",
+                                        "price": 28,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 16050541,
+                                "code": "023f4a75-a7d6-4d27-b533-58ccc1d15a30",
+                                "name": "Japanese Dumpling",
+                                "description": "For ref only: Savory and umami-packed filling wrapped in a delicate, chewy skin.",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/16050541.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 16651412,
+                                        "code": "1243db1f-cb9e-4080-a5f7-4c096f5b8ea9",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "3 pcs",
+                                        "price": 24,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 16651414,
+                                        "code": "f191408c-07a6-463a-8ad0-8836f62c558b",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "5 pcs",
+                                        "price": 28,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 161001985,
+                                "code": "39f5b72e-98b7-430f-8b4e-fd086bb42772",
+                                "name": "Japanese Sweet Red Bean Mochi",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/161001985.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 162185143,
+                                        "code": "b8201ffe-aac7-435c-a781-e28b5cdae53b",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 24,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 161001986,
+                                "code": "584e5507-936b-4bc9-9899-2bc163a172bc",
+                                "name": "Corn Soup",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/161001986.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 162185144,
+                                        "code": "113627f3-27d6-478a-b36e-89ebbd1ddaff",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 22,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 162172131,
+                                "code": "c42c03b3-0256-4813-b20c-7a51c7635a0f",
+                                "name": "Homemade Cheesecake",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/162172131.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 163427849,
+                                        "code": "d734c46e-fdaa-43c1-a9eb-78a21200fa39",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 38,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 163499022,
+                                "code": "521bfbea-29e6-47f3-bffa-1a295c1a83bc",
+                                "name": "Thick-cut Fries",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/163499022.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 164786750,
+                                        "code": "04c767d4-e06d-4a7e-b4ee-23abb4ade62b",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 18,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            }
+                        ],
+                        "is_popular_category": false
+                    },
+                    {
+                        "id": 331279,
+                        "code": "75835ead-5ed9-4f75-bfa7-f083890bf72b",
+                        "name": "Special Drinks",
+                        "description": "",
+                        "products": [
+                            {
+                                "id": 3170771,
+                                "code": "609bdfa7-44dc-4847-bc83-e357301312c0",
+                                "name": "Kumquat Lemon Green Tea",
+                                "description": "For ref only: A refreshing blend of citrusy kumquat and lemon with a subtle green tea base.",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170771.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581559,
+                                        "code": "7eae9d89-7571-4a5e-96bb-86c95d4d18c9",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 36,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581560,
+                                        "code": "56ae8338-136d-4bab-b626-8e78f85796ca",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 36,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170772,
+                                "code": "c0dcb92e-52a1-4fdd-a3f7-4f222e9267e4",
+                                "name": "Lemon Honey Green Tea",
+                                "description": "",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170772.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581561,
+                                        "code": "f5c6f5e9-b7c3-4f69-b0bc-93ff0217bc29",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 36,
+                                        "topping_ids": [
+                                            28429660
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28429660,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581562,
+                                        "code": "8efe4017-8e7e-4c71-86d4-ed5022da8244",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 32,
+                                        "topping_ids": [
+                                            28429660
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28429660,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170773,
+                                "code": "07707376-dee5-4071-8771-ece61e90b502",
+                                "name": "Pineapple Green Tea",
+                                "description": "For ref only: Green tea with pineapple juice",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170773.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581563,
+                                        "code": "a72d2ffb-e5b8-4101-8124-e236d02ee25b",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 36,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581564,
+                                        "code": "1f73041d-6579-4346-90b0-30adcad00733",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 36,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170774,
+                                "code": "580c46ed-83f5-4d5f-a9ac-939f8a0df362",
+                                "name": "Fresh Fruit Tea",
+                                "description": "",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170774.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581565,
+                                        "code": "16f2769e-296b-403c-859a-3dbb7e99993a",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 38,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581566,
+                                        "code": "5d3e0e5b-dc08-49c7-a710-0c11a0c462bc",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 38,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170775,
+                                "code": "750fcc9a-775c-441e-9bd1-3bc96f5095a4",
+                                "name": "Uji Matcha Latte",
+                                "description": "For ref only: Sweet drink mixes uji matcha powder with milk",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170775.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581567,
+                                        "code": "62a32845-e162-4b6d-9384-56667ea9fd00",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 38,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581568,
+                                        "code": "993ebc24-c6ec-494d-a97c-d10e6fe6ba72",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 38,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170776,
+                                "code": "4d545657-e268-4b38-b670-d113628ed975",
+                                "name": "Uji Matcha Red Bean",
+                                "description": "",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170776.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581569,
+                                        "code": "5fd56b7d-679b-4ffb-87e4-98fabb0953cb",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 42,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581570,
+                                        "code": "116f89f1-7a99-4a84-bf3f-6268cbb02048",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 42,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170777,
+                                "code": "9488dc5b-b32b-40b1-a439-b7963d79938d",
+                                "name": "Hibiscus Lemon Tea",
+                                "description": "",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170777.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581571,
+                                        "code": "e48d68bf-8448-4a55-9c9a-8fbb6460a23f",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 42,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581572,
+                                        "code": "751453bb-fbdc-4ba4-93e2-adfa4a934fad",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 42,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 91344587,
+                                "code": "dfb94047-bf6c-40fa-8ff0-cdb7995f8c52",
+                                "name": "Lime Soda",
+                                "description": "Iced",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/91344587.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 92094782,
+                                        "code": "3a14d40e-e3a0-4100-853e-46f14aecb0e9",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 32,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170779,
+                                "code": "2fa294a2-7acf-4733-ac6d-03456aa0794e",
+                                "name": "Bubble Milk Tea",
+                                "description": "For ref only: Tea-based drink with milk and chewy pearls",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170779.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581574,
+                                        "code": "e2a0f050-9919-42e3-8364-9047bd590288",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 32,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581575,
+                                        "code": "f299e47b-7c21-499a-90c8-b30eeb9265fc",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 32,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "tags": [
+                                    "popular"
+                                ],
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170780,
+                                "code": "eea135f9-600e-49a5-b5a3-f66b29b9b115",
+                                "name": "Bubble Milk Tea Coffee",
+                                "description": "",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170780.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581576,
+                                        "code": "0310d29d-ebf6-42b0-9934-45033993e33a",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 36,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581577,
+                                        "code": "8e633ed8-b07e-489b-9e12-7e7521b4703b",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 32,
+                                        "topping_ids": [
+                                            25194355
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 25194355,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170781,
+                                "code": "7ba4ad98-1351-4dc4-a4e1-f733cb5b4e37",
+                                "name": "Black Sugar Bubble Milk",
+                                "description": "Iced",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170781.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581578,
+                                        "code": "4936ca01-3ba9-4261-a4d4-87794cb8c9bd",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 42,
+                                        "topping_ids": [
+                                            28429660
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28429660,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170782,
+                                "code": "6ab5e3c6-ce57-4568-b84f-91f7957045fc",
+                                "name": "Black Sugar Bubble Milk Tea",
+                                "description": "",
+                                "master_category_id": 11,
+                                "file_path": "https://images.deliveryhero.io/image/fd-hk/Products/3170782.jpg?width=%s",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581580,
+                                        "code": "b012ab3d-1fa8-49f0-9290-07bd79058a83",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Hot",
+                                        "price": 42,
+                                        "topping_ids": [
+                                            28429660
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28429660,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    },
+                                    {
+                                        "id": 3581581,
+                                        "code": "944ffd95-33bd-4806-bb1f-b40aae510b43",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "name": "Iced",
+                                        "price": 42,
+                                        "topping_ids": [
+                                            28429660
+                                        ],
+                                        "topping_properties": [
+                                            {
+                                                "id": 28429660,
+                                                "use_original_price": true
+                                            }
+                                        ],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            }
+                        ],
+                        "is_popular_category": false
+                    },
+                    {
+                        "id": 331278,
+                        "code": "83bac173-4f03-4591-aff0-a69745431443",
+                        "name": "Sweet Toasts",
+                        "description": "",
+                        "products": [
+                            {
+                                "id": 3170763,
+                                "code": "d2f64b5a-f612-40c2-9b07-05757893e6c5",
+                                "name": "Strawberry Preserves Toast",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581551,
+                                        "code": "88d75bae-7846-44b2-b31a-1710866d27fd",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 33,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170766,
+                                "code": "a80fea9a-eea6-4e19-aa16-ec7cb1f5ece7",
+                                "name": "Reb Bean \u0026 Butter",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581554,
+                                        "code": "7deec736-bb5f-4b5e-8de3-2bb83c0be641",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 38,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170769,
+                                "code": "f77a323e-1bc7-49f1-b709-0873f1b075e7",
+                                "name": "Peanut Butter with Condensed Milk",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581557,
+                                        "code": "62a06d7d-9f03-42c7-9292-8cc71bb98b85",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 30,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            },
+                            {
+                                "id": 3170770,
+                                "code": "6a852da3-b1fc-4665-915c-0ada11fc2a5c",
+                                "name": "Condensed Milk with Butter",
+                                "description": "",
+                                "master_category_id": 3,
+                                "file_path": "",
+                                "is_sold_out": false,
+                                "is_express_item": true,
+                                "additives": [],
+                                "is_alcoholic_item": false,
+                                "sold_out_options": null,
+                                "product_variations": [
+                                    {
+                                        "id": 3581558,
+                                        "code": "cd0556f4-37be-48c8-b87b-0692f7683660",
+                                        "remote_code": "",
+                                        "container_price": 0,
+                                        "price": 26,
+                                        "topping_ids": [],
+                                        "topping_properties": [],
+                                        "unit_pricing": null
+                                    }
+                                ],
+                                "half_type": "",
+                                "is_bundle": false
+                            }
+                        ],
+                        "is_popular_category": false
+                    }
+                ],
+                "toppings": {
+                    "25194355": {
+                        "id": 25194355,
+                        "name": "Special Drinks - Sugar Level",
+                        "description": "",
+                        "quantity_minimum": 0,
+                        "quantity_maximum": 1,
+                        "options": [
+                            {
+                                "id": 30603491,
+                                "product_id": 3170791,
+                                "name": "Less Sweet ",
+                                "description": "",
+                                "price": 0,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        3581560,
+                                        92094782,
+                                        3581575
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 30603492,
+                                "product_id": 3170792,
+                                "name": "Half Sweet",
+                                "description": "",
+                                "price": 0,
+                                "remote_code": ""
+                            },
+                            {
+                                "id": 30603493,
+                                "product_id": 3170793,
+                                "name": "Little Sugar ",
+                                "description": "",
+                                "price": 0,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        3581566,
+                                        3581577,
+                                        3581564
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 30603494,
+                                "product_id": 3170794,
+                                "name": "No Sugar",
+                                "description": "",
+                                "price": 0,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        3581574,
+                                        3581565
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "choice-group"
+                    },
+                    "28326564": {
+                        "id": 28326564,
+                        "name": "Sandwich - Add On Toppings",
+                        "description": "",
+                        "quantity_minimum": 0,
+                        "quantity_maximum": 8,
+                        "options": [
+                            {
+                                "id": 189294960,
+                                "product_id": 148155713,
+                                "name": "Fried Egg",
+                                "description": "",
+                                "price": 14,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        92098453,
+                                        92098449,
+                                        92098454,
+                                        92098452,
+                                        92098459,
+                                        162608780,
+                                        92098455,
+                                        92098448
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 189294961,
+                                "product_id": 148155714,
+                                "name": "Bolognese",
+                                "description": "",
+                                "price": 14,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        92098453
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 189294962,
+                                "product_id": 148155715,
+                                "name": "Jumbo Sausage",
+                                "description": "",
+                                "price": 14,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        92098453,
+                                        92098452,
+                                        92098459
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 215700738,
+                                "product_id": 148155717,
+                                "name": "Cheese",
+                                "description": "",
+                                "price": 7,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        92098454,
+                                        92098455
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 215700739,
+                                "product_id": 148155718,
+                                "name": "Bacon",
+                                "description": "",
+                                "price": 10,
+                                "remote_code": ""
+                            },
+                            {
+                                "id": 215700740,
+                                "product_id": 148155719,
+                                "name": "Black Truffle ",
+                                "description": "",
+                                "price": 10,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        92098452
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 215700741,
+                                "product_id": 148155720,
+                                "name": "Jalapeno",
+                                "description": "",
+                                "price": 7,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        92098448
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 215700742,
+                                "product_id": 162127954,
+                                "name": "pineapple slice",
+                                "description": "",
+                                "price": 10,
+                                "remote_code": ""
+                            }
+                        ],
+                        "type": "choice-group"
+                    },
+                    "28429660": {
+                        "id": 28429660,
+                        "name": "Special Drinks - Sugar Level",
+                        "description": "",
+                        "quantity_minimum": 0,
+                        "quantity_maximum": 1,
+                        "options": [
+                            {
+                                "id": 190853027,
+                                "product_id": 3170791,
+                                "name": "Less Sweet ",
+                                "description": "",
+                                "price": 0,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        3581578
+                                    ]
+                                }
+                            },
+                            {
+                                "id": 190853028,
+                                "product_id": 3170792,
+                                "name": "Half Sweet",
+                                "description": "",
+                                "price": 0,
+                                "remote_code": ""
+                            },
+                            {
+                                "id": 190853029,
+                                "product_id": 3170793,
+                                "name": "Little Sugar ",
+                                "description": "",
+                                "price": 0,
+                                "remote_code": "",
+                                "variation_tag_map": {
+                                    "popular": [
+                                        3581561,
+                                        3581581,
+                                        3581562
+                                    ]
+                                }
+                            }
+                        ],
+                        "type": "choice-group"
+                    }
+                },
+                "tags": {
+                    "popular": {
+                        "name": "popular",
+                        "translation_keys": {
+                            "description": "NEXTGEN_POPULAR_CATEGORY_DESCRIPTION",
+                            "title": "NEXTGEN_POPULAR_DISH_TAG"
+                        },
+                        "elements": [
+                            "label",
+                            "category"
+                        ],
+                        "metadata": {
+                            "sorting": [
+                                91349066,
+                                91349071,
+                                91349076,
+                                91349075,
+                                91349080,
+                                3170779
+                            ]
+                        }
+                    }
+                },
+                "default_sold_out_options": [
+                    {
+                        "default": true,
+                        "option": "REFUND",
+                        "text": "NEXTGEN_SoldOutOptions_Refund"
+                    },
+                    {
+                        "default": false,
+                        "option": "CANCEL",
+                        "text": "NEXTGEN_SoldOutOptions_Cancel"
+                    },
+                    {
+                        "default": false,
+                        "option": "CALL_CUSTOMER",
+                        "text": "NEXTGEN_SoldOutOptions_CALL_CUSTOMER"
+                    }
+                ]
+            }
+        ],
+        "metadata": {
+            "is_delivery_available": false,
+            "is_pickup_available": true,
+            "available_in": "2023-09-06T11:00:00+0800",
+            "has_discount": false,
+            "timezone": "Asia/Hong_Kong",
+            "events": [],
+            "close_reasons": [],
+            "is_flood_feature_closed": false
+        },
+        "minimum_delivery_fee": 0,
+        "minimum_delivery_time": 60,
+        "minimum_order_amount": 80,
+        "minimum_pickup_time": 15,
+        "multiple_toppings": false,
+        "name": "BakeOut Homemade Koppepan",
+        "original_delivery_fee": 0,
+        "payment_types": [],
+        "post_code": "X",
+        "primary_cuisine_id": 36,
+        "rating": 4.6,
+        "topic_ratings": null,
+        "review_number": 801,
+        "review_with_comment_number": 0,
+        "schedules": [
+            {
+                "id": 0,
+                "weekday": 1,
+                "opening_type": "delivering",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 2,
+                "opening_type": "delivering",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 3,
+                "opening_type": "delivering",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 4,
+                "opening_type": "delivering",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 5,
+                "opening_type": "delivering",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 6,
+                "opening_type": "delivering",
+                "opening_time": "09:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 7,
+                "opening_type": "delivering",
+                "opening_time": "09:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 1,
+                "opening_type": "pickup",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 2,
+                "opening_type": "pickup",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 3,
+                "opening_type": "pickup",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 4,
+                "opening_type": "pickup",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 5,
+                "opening_type": "pickup",
+                "opening_time": "11:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 6,
+                "opening_type": "pickup",
+                "opening_time": "09:00",
+                "closing_time": "20:15"
+            },
+            {
+                "id": 0,
+                "weekday": 7,
+                "opening_type": "pickup",
+                "opening_time": "09:00",
+                "closing_time": "20:15"
+            }
+        ],
+        "service_fee": 0,
+        "service_fee_percentage_amount": 0,
+        "small_order_fee": null,
+        "special_days": [
+            {
+                "date": "2023-09-05",
+                "opening_type": "unavailable",
+                "opening_time": "20:15",
+                "closing_time": "00:00",
+                "end_date": "2023-09-06"
+            }
+        ],
+        "tag": "",
+        "tags": null,
+        "trade_register_number": "6968638400007184",
+        "url_key": "bakeout-homemade-koppepan",
+        "characteristics": {
+            "cuisines": [
+                {
+                    "id": 35,
+                    "name": "Sandwich",
+                    "url_key": "sandwich",
+                    "main": false
+                },
+                {
+                    "id": 36,
+                    "name": "Japanese",
+                    "url_key": "japanese",
+                    "main": true
+                },
+                {
+                    "id": 39,
+                    "name": "Asian",
+                    "url_key": "asian",
+                    "main": false
+                },
+                {
+                    "id": 53,
+                    "name": "Drinks",
+                    "url_key": "beverages",
+                    "main": false
+                },
+                {
+                    "id": 115,
+                    "name": "Western",
+                    "url_key": "western",
+                    "main": false
+                },
+                {
+                    "id": 1078,
+                    "name": "Bubble Tea",
+                    "url_key": "bubble-tea",
+                    "main": false
+                }
+            ],
+            "food_characteristics": [],
+            "primary_cuisine": {
+                "id": 36,
+                "name": "Japanese",
+                "url_key": "japanese",
+                "main": true
+            }
+        },
+        "vendor_legal_information": {
+            "legal_name": "BakeOut Homemade Koppepan 手作熱狗面包三文治 (Sai Ying Pun)",
+            "address_line_1": "G/F, Wah Lee Building, 216 Queen's Road West, Sai Ying Pun",
+            "trade_register_number": "6968638400007184"
+        },
+        "vertical": "restaurants",
+        "vertical_segment": "restaurants",
+        "vertical_parent": "Restaurant",
+        "web_path": "https://www.foodpanda.hk/restaurant/v3iw/bakeout-homemade-koppepan",
+        "is_partner_cashback_disabled": false,
+        "vertical_type_ids": [
+            "restaurants"
+        ]
+    }
+}

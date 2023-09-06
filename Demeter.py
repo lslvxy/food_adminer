@@ -9,6 +9,7 @@
 ################################################################################
 import logging
 import sys
+import traceback
 
 from PySide6 import QtGui, QtCore
 
@@ -159,6 +160,7 @@ class mywindow(QWidget, Ui_Widget):
                 except Exception as e:
                     print('Collection Fail!')
                     print("Collection Exception: %s" % e)
+                    traceback.print_exc()
                     self.pushButton.setDisabled(False)
                     # msgBox.exec()
 
@@ -174,6 +176,7 @@ class mywindow(QWidget, Ui_Widget):
                 except Exception as e:
                     print('Collection Fail!')
                     print("Collection Exception: %s" % e)
+                    traceback.print_exc()
                     self.pushButton.setDisabled(False)
                     # msgBox.exec()
             self.pushButton.setDisabled(False)

@@ -92,6 +92,59 @@ def parse_foodgrabV2(page_url, variables):
     parse_ExcelV2(soup, variables)
 
 
+# 'product_id': product_id,
+#                            'product_type': 'SINGLE',
+#                            'product_name': product_name,
+#                            'category_name': category_name,
+#                            'sub_product_ids': '',
+#                            'product_description': product_description,
+#                            'product_price': product_price,
+#                            'selection_range_min': '',
+#                            'selection_range_max': '',
+def replace_sub_id(_list, delete_ids):
+    for p_id, data in _list.items():
+        sub_product_ids = data.get('sub_product_ids')
+        if not sub_product_ids:
+            continue
+        for _old, _new in delete_ids.items():
+            if _old in sub_product_ids.split('|'):
+                sub_product_ids = sub_product_ids.replace(_old, _new)
+        data['sub_product_ids'] = sub_product_ids
+        _list[p_id] = data
+        logging.info(f"replace success,parent_id={p_id},result={sub_product_ids}")
+    return _list
+
+
+def clean(_list):
+    all_data = {}
+    delete_ids = {}
+    datas = _list.items()
+    for productId, data in datas:
+        key = '_'.join(
+            [data.get('category_name'), data.get('product_type'), data.get('product_name'),
+             data.get('sub_product_ids'),
+             str(data.get('product_price', '')), str(data.get('selection_range_min', '')),
+             str(data.get('selection_range_max', ''))])
+        # print(f"assemble key:{key}")
+        # duplicate 12345678
+        if key in all_data:
+            ori_product_id = all_data.get(key)
+            logging.info(f"key exist,ori={ori_product_id},new={productId}")
+
+            delete_ids[productId] = ori_product_id
+        else:
+            all_data[key] = productId
+
+    if delete_ids:
+        logging.info(json.dumps(delete_ids))
+        _list = replace_sub_id(_list, delete_ids)
+        for _id in delete_ids.keys():
+            if _id in _list:
+                del _list[_id]
+
+    return _list.values()
+
+
 def parse_ExcelV2(soup, variables):
     homedir = str(pathlib.Path.home())
     store_id = variables['id']
@@ -112,7 +165,7 @@ def parse_ExcelV2(soup, variables):
         category_id = category.get('ID')
         category_name = fixStr(category.get('name'))
         category_data = {
-            'category_id': category_id,
+            'category_id': '',
             'category_name': category_name,
             'category_description': '',
             'category_image': ''
@@ -124,7 +177,7 @@ def parse_ExcelV2(soup, variables):
             continue
         # product
 
-        for product in source_product_list:
+        for p_idx, product in enumerate(source_product_list):
             product_id = product.get('ID')
             # product_id exist, merge category name
             if product_id in total_product_map:
@@ -169,7 +222,7 @@ def parse_ExcelV2(soup, variables):
             modifier_groups = product_data.get('modifierGroups')
             if not modifier_groups:
                 continue
-            for modifier_group in modifier_groups:
+            for g_idx, modifier_group in enumerate(modifier_groups):
                 group_id = modifier_group.get('ID')
                 group_name = (modifier_group.get('name'))
                 group_data = {'id': '',
@@ -201,7 +254,7 @@ def parse_ExcelV2(soup, variables):
             modifier_items = group_data.get('modifiers')
             if not modifier_items:
                 continue
-            for modifier_item in modifier_items:
+            for m_idx, modifier_item in enumerate(modifier_items):
                 modifier_id = modifier_item.get('ID')
                 modifier_name = modifier_item.get('name')
 
@@ -223,7 +276,8 @@ def parse_ExcelV2(soup, variables):
         logging.info(json.dumps(total_modifier_map))
 
     # to excel
-    all_data_product = [*total_product_map.values(), *total_group_map.values(), *total_modifier_map.values()]
+    # all_data_product = [*total_product_map.values(), *total_group_map.values(), *total_modifier_map.values()]
+    all_data_product = clean(dict(**dict(**total_product_map, **total_group_map), **total_modifier_map))
 
     all_excel_data_product = []
     all_excel_data_category = []
@@ -282,7 +336,7 @@ def parse_ExcelV1(soup, variables):
             category_path = init_category_path(homedir, store_name, category_name)
             product_description = product.get('description')
             product_price = product.get('discountedPriceV2').get('amountDisplay')
-            product_image = save_image(product.get('images'), category_path, product_name)
+            product_image = ''  # save_image(product.get('images'), category_path, product_name)
             result = {'product_id': product_id, 'category_name': category_name,
                       'product_name': product_name, 'product_description': product_description,
                       'product_price': product_price, 'product_image': product_image}
