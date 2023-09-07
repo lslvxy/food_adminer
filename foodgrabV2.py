@@ -116,28 +116,28 @@ def replace_sub_id(_list, delete_ids):
 
 
 def clean(_list):
-    all_data = {}
     delete_ids = {}
-    datas = _list.items()
-    for productId, data in datas:
-        key = '_'.join(
-            [data.get('category_name'), data.get('product_type'), data.get('product_name'),
-             data.get('sub_product_ids'),
-             str(data.get('product_price', '')), str(data.get('selection_range_min', '')),
-             str(data.get('selection_range_max', ''))])
-        # print(f"assemble key:{key}")
-        # duplicate 12345678
-        if key in all_data:
-            ori_product_id = all_data.get(key)
-            logging.info(f"key exist,ori={ori_product_id},new={productId}")
+    for i in range(3):
+        all_data = {}
+        for productId, data in _list.items():
+            key = '_'.join(
+                [data.get('category_name'), data.get('product_type'), data.get('product_name'),
+                 data.get('sub_product_ids'),
+                 str(data.get('product_price', '')), str(data.get('selection_range_min', '')),
+                 str(data.get('selection_range_max', ''))])
+            # print(f"assemble key:{key}")
+            # duplicate 12345678
+            if key in all_data:
+                ori_product_id = all_data.get(key)
+                logging.info(f"key exist,ori={ori_product_id},new={productId}")
 
-            delete_ids[productId] = ori_product_id
-        else:
-            all_data[key] = productId
+                delete_ids[productId] = ori_product_id
+            else:
+                all_data[key] = productId
+        _list = replace_sub_id(_list, delete_ids)
 
     if delete_ids:
         logging.info(json.dumps(delete_ids))
-        _list = replace_sub_id(_list, delete_ids)
         for _id in delete_ids.keys():
             if _id in _list:
                 del _list[_id]
