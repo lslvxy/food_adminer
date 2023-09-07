@@ -67,20 +67,27 @@ def fetch_restaurant(soup, id):
 def save_image(urls, category_path, product_name):
     if urls is None or urls == []:
         return ''
-    # r = requests.get(urls[0], timeout=180)
+    r = requests.get(urls[0], timeout=180)
     file_name = f"{product_name.strip()}.jpg"
     image_path = os.path.join(category_path, file_name)
-    # with open(image_path, 'wb') as f:
-    #     f.write(r.content)
+    image_path2 = os.path.join(category_path, "..", "ALL", file_name)
+    blob = r.content
+    with open(image_path, 'wb') as f:
+        f.write(blob)
+    with open(image_path2, 'wb') as f:
+        f.write(blob)
     print("Download image: " + image_path)
     return file_name
 
 
 def init_category_path(homedir, store_name, category_name):
-    dirPath = os.path.join(homedir, "Aim_menu", "food_grab", f"{store_name.strip()}", f"{category_name.strip()}")
-    if not os.path.exists(dirPath):
-        os.makedirs(dirPath)
-    return dirPath
+    dir_path = os.path.join(homedir, "Aim_menu", "food_grab", f"{store_name.strip()}", f"{category_name.strip()}")
+    dir_path2 = os.path.join(homedir, "Aim_menu", "food_grab", f"{store_name.strip()}", "ALL")
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    if not os.path.exists(dir_path2):
+        os.makedirs(dir_path2)
+    return dir_path
 
 
 def parse_foodgrabV2(page_url, variables):
