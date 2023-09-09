@@ -1,4 +1,5 @@
 import json
+import pathlib
 import re
 from urllib.parse import urlparse
 import pandas as pd
@@ -82,6 +83,12 @@ def toExcel(title_list, data_list, file_path):
     print("Write file to " + file_path)
     df.to_excel(file_path, index=False)
 
+def init_path(spider_type, store_name, category_name):
+    homedir = str(pathlib.Path.home())
+    dir_path = os.path.join(homedir, "Aim_menu", spider_type, f"{fixStr(store_name.strip())}", category_name)
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    return dir_path
 
 if __name__ == '__main__':
     xx={}
