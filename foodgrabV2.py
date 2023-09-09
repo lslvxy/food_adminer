@@ -46,13 +46,15 @@ def parse_foodgrabV2(page_url, variables):
     item.menus = category_list
     item.language = variables['language']
     compose_images(item)
-    # save_images(item)
+    save_images(item)
     process_category(item)
     process_product(item)
     process_group(item)
     process_item(item)
     process_final_list(item)
     process_excel(item)
+
+    parse_foodgrabV1(item, variables)
 
 
 def fetch_html(url):
@@ -343,6 +345,157 @@ def process_excel(item):
         writer.sheets['productList'].delete_rows(4)
 
     print("Collection complete")
+
+
+def parse_foodgrabV1(item, variables):
+    homedir = str(pathlib.Path.home())
+    store_name = item.store_name
+    category_list = item.menus
+    if category_list is None:
+        return None
+
+    food_grab_list = []
+    for category in category_list:
+        category_name = category.get('name')
+        product_list = category.get('items')
+        if product_list is None:
+            continue
+        for product in product_list:
+            product_id = product.get('ID')
+            product_name = product.get('name')
+            logging.info("parse product_name: " + product_name)
+            product_description = product.get('description')
+            product_price = product.get('discountedPriceV2').get('amountDisplay')
+            product_image = fixStr(product_name) + '.jpg'
+            result = {'product_id': product_id, 'category_name': category_name,
+                      'product_name': product_name, 'product_description': product_description,
+                      'product_price': product_price, 'product_image': product_image}
+
+            modifier_groups = product.get('modifierGroups')
+            if modifier_groups:
+                for modifier_group in modifier_groups:
+                    group_name = modifier_group.get('name')
+                    logging.info("parse group_name: " + product_name)
+                    modifier_items = modifier_group.get('modifiers')
+                    group_select_type = 'Single' if modifier_group.get('selectionType') == 0 else 'Multiple'
+                    if modifier_group.get('selectionRangeMin') == modifier_group.get('selectionRangeMax') == 1:
+                        group_required_or_not = "TRUE"
+                    else:
+                        group_required_or_not = "FALSE"
+                    group_min_available = modifier_group.get('selectionRangeMin')
+                    group_max_available = modifier_group.get('selectionRangeMax')
+
+                    if modifier_items:
+                        for modifier_item in modifier_items:
+                            item_name = modifier_item.get('name')
+                            logging.info("parse item_name: " + product_name)
+                            item_price = (modifier_item.get('priceV2').get('amountDisplay'))
+                            result_item = {'product_id': product_id, 'category_name': category_name,
+                                           'product_name': product_name, 'product_description': product_description,
+                                           'product_price': product_price, 'product_image': product_image,
+                                           'modifier_group': group_name, 'item_name': item_name,
+                                           'item_price': item_price, 'required_or_not': group_required_or_not,
+                                           'selection_type': group_select_type,
+                                           'selection_range_min': group_min_available,
+                                           'selection_range_max': group_max_available}
+                            food_grab_list.append(result_item)
+                            logging.info(result_item)
+                    else:
+                        result['modifier_group'] = group_name
+                        result['selection_type'] = group_select_type
+                        result['required_or_not'] = group_required_or_not
+                        result['selection_range_min'] = group_min_available
+                        result['selection_range_max'] = group_max_available
+                        item_price = modifier_group.get('discountedPriceV2').get('amountDisplay')
+                        result['item_price'] = item_price
+                        result['product_price'] = item_price
+                        food_grab_list.append(result)
+                        logging.info(result)
+
+            else:
+                food_grab_list.append(result)
+
+    # logging.info(food_grab_list)
+    food_grab_excel_list = []
+    # assmbleExcel
+    i = 0
+    while i < len(food_grab_list):
+        excel_language = variables.get('language', 'EN')
+        excel_outlet_id = ''
+        excel_outlet_services = ''
+        excel_over_write = ''
+        excel_category_name_en = (food_grab_list[i]).get('category_name') if isEn(variables) else ''
+        excel_category_name_th = (food_grab_list[i]).get('category_name') if isTh(variables) else ''
+        excel_category_name_cn = (food_grab_list[i]).get('category_name') if isCn(variables) else ''
+        excel_category_sku = ''
+        excel_category_description_en = ''
+        excel_category_description_th = ''
+        excel_category_description_cn = ''
+        excel_item_name_en = (food_grab_list[i]).get('product_name') if isEn(variables) else ''
+        excel_item_name_th = (food_grab_list[i]).get('product_name') if isTh(variables) else ''
+        excel_item_name_cn = (food_grab_list[i]).get('product_name') if isCn(variables) else ''
+        excel_item_sku = ''
+        excel_item_image = (food_grab_list[i]).get('product_image')
+
+        excel_description_en = (food_grab_list[i]).get('product_description') if isEn(variables) else ''
+        excel_description_th = (food_grab_list[i]).get('product_description') if isTh(variables) else ''
+        excel_description_cn = (food_grab_list[i]).get('product_description') if isCn(variables) else ''
+        excel_conditional_modifier = ''
+        excel_item_price = (food_grab_list[i]).get('item_price')
+        excel_modifier_group_en = (food_grab_list[i]).get('modifier_group') if isEn(variables) else ''
+        excel_modifier_group_th = (food_grab_list[i]).get('modifier_group') if isTh(variables) else ''
+        excel_modifier_group_cn = (food_grab_list[i]).get('modifier_group') if isCn(variables) else ''
+        excel_modifier_group_sku = ''
+        excel_modifier_group_description_en = ''
+        excel_modifier_group_description_th = ''
+        excel_modifier_group_description_cn = ''
+
+        excel_select_type = (food_grab_list[i]).get('selection_type')
+        excel_required_or_not = (food_grab_list[i]).get('required_or_not')
+        excel_min_available = (food_grab_list[i]).get('selection_range_min')
+        excel_max_available = (food_grab_list[i]).get('selection_range_max')
+        excel_modifier_en = (food_grab_list[i]).get('item_name') if isEn(variables) else ''
+        excel_modifier_th = (food_grab_list[i]).get('item_name') if isTh(variables) else ''
+        excel_modifier_cn = (food_grab_list[i]).get('item_name') if isCn(variables) else ''
+        excel_modifier_sku = ''
+        excel_modifier_description_en = ''
+        excel_modifier_description_th = ''
+        excel_modifier_description_cn = ''
+        excel_options_price = (food_grab_list[i]).get('item_price')
+
+        food_grab_excel_list.append(
+            [excel_language, excel_outlet_id, excel_outlet_services, excel_over_write,
+             excel_category_name_en, excel_category_name_th, excel_category_name_cn, excel_category_sku,
+             excel_category_description_en, excel_category_description_th, excel_category_description_cn,
+             excel_item_name_en, excel_item_name_th, excel_item_name_cn, excel_item_sku, excel_item_image,
+             excel_description_en, excel_description_th, excel_description_cn,
+             excel_conditional_modifier, excel_item_price,
+             excel_modifier_group_en, excel_modifier_group_th, excel_modifier_group_cn, excel_modifier_group_sku,
+             excel_modifier_group_description_en, excel_modifier_group_description_th,
+             excel_modifier_group_description_cn,
+             excel_select_type, excel_required_or_not, excel_min_available, excel_max_available,
+             excel_modifier_en, excel_modifier_th, excel_modifier_cn, excel_modifier_sku,
+             excel_modifier_description_en, excel_modifier_description_th, excel_modifier_description_cn,
+             excel_options_price, '', '', '', '', ''])
+        i += 1
+    xlsx_path = os.path.join(homedir, "Aim_menu", "food_grab", f"{store_name}_{variables['language']}.xlsx")
+    columns = ["Language", "Outlet ID", "Outlet services", "Overwrite (Y/N)", "category_name_en",
+               "category_name_th",
+               "category_name_cn", "category_sku", "category_description_en",
+               "category_description_th",
+               "category_description_cn", "item_name_en", "item_name_th", "item_name_cn", "item_sku",
+               "item_image", "description_en", "description_th", "description_cn",
+               "conditional_modifier", "item_price", "modifier_group_en",
+               "modifier_group_th", "modifier_group_cn", "modifier_group_sku",
+               "modifier_group_description_en", "modifier_group_description_th",
+               "modifier_group_description_cn", "select_type",
+               "required_or_not", "min_available", "max_available", "modifier_en",
+               "modifier_th", "modifier_cn", "modifier_sku", "modifier_description_en",
+               "modifier_description_th", "modifier_description_cn", "options_price", "open_field1",
+               "open_field2", "open_field3", "open_field4", "open_field5"]
+    toExcel(columns, food_grab_excel_list, xlsx_path)
+    print("Collection complete")
+    return True
 
 # if __name__ == '__main__':
 #     url = 'https://food.grab.com/sg/en/restaurant/saap-saap-thai-jewel-changi-airport-b1-299-delivery/4-CZKELFETJBEBG6'
