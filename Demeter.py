@@ -15,8 +15,7 @@ from PySide6 import QtGui, QtCore
 
 from utils import parse
 from foodgrabV2 import parse_foodgrabV2
-from foodgrab import parse_foodgrab
-from foodpanda import parse_foodpanda
+from foodpandaV2 import parse_foodpandaV2
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
                             QMetaObject, QObject, QPoint, QRect,
                             QSize, QTime, QUrl, Qt, QEventLoop, QTimer)
@@ -38,8 +37,10 @@ class Ui_Widget(object):
         self.lineEdit = QLineEdit(Widget)
         self.lineEdit.setObjectName(u"lineEdit")
         self.lineEdit.setGeometry(QRect(110, 50, 621, 41))
+        # self.lineEdit.setText(
+        #     u"https://food.grab.com/sg/en/restaurant/mcdonald-s-jurong-green-cc-delivery/SGDD04996")
         self.lineEdit.setText(
-            u"https://food.grab.com/sg/en/restaurant/mcdonald-s-jurong-green-cc-delivery/SGDD04996")
+            u"https://www.foodpanda.hk/restaurant/v3iw/bakeout-homemade-koppepan")
         self.label = QLabel(Widget)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(40, 60, 58, 16))
@@ -172,7 +173,7 @@ class mywindow(QWidget, Ui_Widget):
                 # self.mainLayout.addWidget(self.ListWidget)
                 # self.setLayout(self.mainLayout)
                 try:
-                    parse_foodpanda(page_url, variables)
+                    parse_foodpandaV2(page_url, variables)
                 except Exception as e:
                     print('Collection Fail!')
                     print("Collection Exception: %s" % e)
