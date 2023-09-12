@@ -36,10 +36,10 @@ def parse_foodpandaV2(page_url, variables):
     root_data = fetch_data(page_url, variables)
     store_data = root_data.get('data', None)
 
-    if root_data is None:
+    if store_data is None:
         print("Failure to parse menu data")
         return
-    menus = root_data.get('menus', None)
+    menus = store_data.get('menus', None)
     if menus is None:
         print("Failure to parse menu data")
         return
@@ -62,15 +62,16 @@ def parse_foodpandaV2(page_url, variables):
     process_item(item)
     process_final_list(item)
     process_excel(item)
-    pass
+
+    parse_foodpandaV1(item, variables)
 
 
 def fetch_data(page_url, variables):
     api_url = 'https://%s.fd-api.com/api/v5/vendors/%s?include=menus,bundles,multiple_discounts&language_id=6&basket_currency=TWD&show_pro_deals=true'
     complete_url = api_url % (variables['country'], variables['id'])
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36',
-        'Accept': '*/*',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69',
+        'Accept': 'application/json, text/plain, */*',
         'Accept-Encoding': 'gzip, deflate, br'
     }
     payload = {}
@@ -148,14 +149,14 @@ def process_product(item):
         if source_product_list is None:
             continue
         for p_idx, product in enumerate(source_product_list):
-            product_id = product.get('id')
+            product_id = str(product.get('id'))
             if not product_id:
                 timestamp = datetime.timestamp(datetime.now())
                 product_id = f'SI{p_idx}{timestamp}'
                 product['id'] = product_id
             product_name = fixStr(product.get('name'))
             product_description = product.get('description')
-            product_variations = product.get('product_variations')
+            product_variations = product.get('product_variations')[0]
             product_price = product_variations.get('price')
             product_image = fixStr(product['name']) + '.jpg'
             product_data = {'id': '',
@@ -182,7 +183,7 @@ def process_product(item):
                 product_data['modifier_groups'] = modifier_groups
                 all_sub_group_id = []
                 for modifier_group in modifier_groups:
-                    all_sub_group_id.append(modifier_group.get('id'))
+                    all_sub_group_id.append(str(modifier_group.get('id')))
                 product_data['sub_product_ids'] = '|'.join(all_sub_group_id)
 
             total_product_map[product_id] = product_data
@@ -197,7 +198,7 @@ def process_group(item):
         if not modifier_groups:
             continue
         for g_idx, modifier_group in enumerate(modifier_groups):
-            group_id = modifier_group.get('id')
+            group_id = str(modifier_group.get('id'))
             group_name = modifier_group.get('name')
             group_data = {'id': '',
                           'product_id': group_id,
@@ -217,7 +218,7 @@ def process_group(item):
                 group_data['modifiers'] = modifiers
                 all_sub_modifiers_id = []
                 for modifier in modifiers:
-                    all_sub_modifiers_id.append(modifier.get('id'))
+                    all_sub_modifiers_id.append(str(modifier.get('id')))
                 group_data['sub_product_ids'] = '|'.join(all_sub_modifiers_id)
 
             total_group_map[group_id] = group_data
@@ -232,7 +233,7 @@ def process_item(item):
         if not modifier_items:
             continue
         for m_idx, modifier_item in enumerate(modifier_items):
-            modifier_id = modifier_item.get('id')
+            modifier_id = str(modifier_item.get('id'))
             modifier_name = modifier_item.get('name')
 
             item_price = modifier_item.get('price')
@@ -254,13 +255,54 @@ def process_item(item):
     item.total_modifier_map = total_modifier_map
 
 
+def replace_sub_id(_list, delete_ids):
+    for p_id, data in _list.items():
+        sub_product_ids = data.get('sub_product_ids')
+        category_name = data.get('category_name')
+        if not sub_product_ids:
+            continue
+        for _old, _new in delete_ids.items():
+            new_category_name = _list.get(_new).get('category_name')
+            if category_name and new_category_name not in category_name:
+                data['category_name'] = '|'.join([category_name, new_category_name])
+            if _old in sub_product_ids.split('|'):
+                sub_product_ids = sub_product_ids.replace(_old, _new)
+        data['sub_product_ids'] = sub_product_ids
+        _list[p_id] = data
+    return _list
+
+
+def build_key(data):
+    key = '_'.join([data.get('product_type'), data.get('product_name'),
+                    data.get('sub_product_ids'),
+                    str(data.get('product_price', '')), str(data.get('selection_range_min', '')),
+                    str(data.get('selection_range_max', ''))])
+    return key
+
 
 def process_final_list(item):
     total_product_map = item.total_product_map
     total_group_map = item.total_group_map
     total_modifier_map = item.total_modifier_map
+    delete_ids = {}
     all_data_product = dict(**dict(**total_product_map, **total_group_map), **total_modifier_map)
+    for i in range(3):
+        all_data = {}
+        for productId, _data in all_data_product.items():
+            key = build_key(_data)
+            if key in all_data:
+                ori_product_id = all_data.get(key)
+                delete_ids[productId] = ori_product_id
+            else:
+                all_data[key] = productId
+        all_data_product = replace_sub_id(all_data_product, delete_ids)
+
+    if delete_ids:
+        for _id in delete_ids.keys():
+            if _id in all_data_product:
+                del all_data_product[_id]
     item.fina_data = all_data_product.values()
+
 
 def process_excel(item):
     homedir = str(pathlib.Path.home())
@@ -310,31 +352,18 @@ def process_excel(item):
     print("Collection complete")
 
 
-def parse_foodpandaV1(page_url, variables):
+def parse_foodpandaV1(item, variables):
     homedir = str(pathlib.Path.home())
-    product_info = fetch_data(page_url, variables)
-    root_data = product_info.get('data', None)
-
-    if root_data is None:
-        print("Failure to parse menu data")
-        return
-    menus = root_data.get('menus', None)
-    if menus is None:
-        print("Failure to parse menu data")
-        return
-
-    menu_categories = menus[0].get('menu_categories')
+    menu_categories = item.menus
 
     if menu_categories is None:
         print("Failure to parse menu category data")
         return
-    # return log
 
-    toppings = root_data.get('toppings')
-
+    toppings = item.toppings
     # print(toppings)
     food_panda_list = []
-    store_name = root_data.get('name')
+    store_name = item.store_name
     for category in menu_categories:
         products_list = category.get('products', None)
         full_category_name = category['name']
@@ -360,15 +389,7 @@ def parse_foodpandaV1(page_url, variables):
             total_image = '' if product['images'] == [] else product['images'][0]['image_url']
             item_image_name = ''
             if total_image != '':
-                item_image = total_image
-                r = requests.get(item_image, timeout=180)
-                image_path = os.path.join(dirPath, f"{item_name.strip()}.jpg")
-                with open(image_path, 'wb') as f:
-                    f.write(r.content)
-                print("Download image: " + image_path)
-                item_image_name = f"{item_name.strip()}.jpg"
-            else:
-                item_image_name = ''
+                item_image_name = f"{fixStr(item_name.strip())}.jpg"
             if product_variations is None:
                 print("product ：{name}，no information".format(name=product.get('name')))
                 continue
