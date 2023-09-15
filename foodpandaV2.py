@@ -322,32 +322,26 @@ def process_excel(item):
             [cc.get('category_id'), cc.get('category_name'), cc.get('category_description'),
              cc.get('category_image')])
 
-    columns_sheet_category = [("categoryId", "description", "demo"), ("categoryName", "description", "demo"),
-                              ("description_Default", "description", "demo"),
-                              ("categoryImage", "description", "demo")]
+    columns_sheet_category = [("categoryId"), ("categoryName"), ("description_Default"), ("categoryImage")]
 
-    columns_sheet_product = [("productId", "description", "demo"), ("posProductId", "description", "demo"),
-                             ("productType", "description", "demo"), ("name", "description", "demo"),
-                             ("category", "description", "demo"), ("subPosProductIds", "description", "demo"), (
-                                 "description", "description", "demo"), (
-                                 "price", "description", "demo"), ("min", "description", "demo"),
-                             ("max", "description", "demo"), ("images", "description", "demo"),
-                             ("blockList", "description", "demo")]
+    columns_sheet_product = [("productId"), ("posProductId"), ("productType"), ("name"), ("category"),
+                             ("subPosProductIds"), ("description"), ("price"), ("min"), ("max"), ("images"),
+                             ("blockList")]
 
     xlsx_path = os.path.join(homedir, "Aim_menu", "food_panda",
                              f"{item.store_name}_{item.language}_V2.xlsx")
     # toExcel(columns, all_excel_data, xlsx_path)
-    df1 = pd.DataFrame(all_excel_data_category, columns=pd.MultiIndex.from_tuples(columns_sheet_category))
-    df1.index = range(1, len(df1) + 1)
+    df1 = pd.DataFrame(all_excel_data_category, columns=columns_sheet_category, index=None)
+    # df1.index = range(1, len(df1) + 1)
 
-    df2 = pd.DataFrame(all_excel_data_product, columns=pd.MultiIndex.from_tuples(columns_sheet_product))
-    df2.index = range(1, len(df2) + 1)
+    df2 = pd.DataFrame(all_excel_data_product, columns=columns_sheet_product, index=None)
+    # df2.index = range(1, len(df2) + 1)
     with pd.ExcelWriter(xlsx_path) as writer:
 
-        df1.to_excel(writer, sheet_name='categoryList')
-        df2.to_excel(writer, sheet_name='productList')
-        writer.sheets['categoryList'].delete_rows(4)
-        writer.sheets['productList'].delete_rows(4)
+        df1.to_excel(writer, sheet_name='categoryList', index=False)
+        df2.to_excel(writer, sheet_name='productList', index=False)
+        # writer.sheets['categoryList'].delete_rows(4)
+        # writer.sheets['productList'].delete_rows(4)
 
     print("Collection complete")
 

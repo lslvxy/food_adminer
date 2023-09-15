@@ -39,8 +39,8 @@ class Ui_Widget(object):
         self.lineEdit.setGeometry(QRect(110, 50, 621, 41))
         # self.lineEdit.setText(
         #     u"https://food.grab.com/sg/en/restaurant/mcdonald-s-jurong-green-cc-delivery/SGDD04996")
-        self.lineEdit.setText(
-            u"https://www.foodpanda.hk/restaurant/v3iw/bakeout-homemade-koppepan")
+        # self.lineEdit.setText(
+        #     u"https://www.foodpanda.hk/restaurant/v3iw/bakeout-homemade-koppepan")
         self.label = QLabel(Widget)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(40, 60, 58, 16))

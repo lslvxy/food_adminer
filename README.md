@@ -10,5 +10,5 @@ mac 打包   pyinstaller -F -w -y  Demeter.py -p url_parse.py -p foodpanda.py -p
 python -m nuitka --follow-imports --standalone  --disable-console --enable-plugin=pyside6 .\Demeter.py 
 
 
-/usr/local/bin/python3 -m nuitka --follow-imports --standalone --macos-create-app-bundle --disable-console --enable-plugin=pyside6 ./Demeter.py 
+python3 -m nuitka --follow-imports --standalone --macos-create-app-bundle --disable-console --enable-plugin=pyside6 --macos-app-icon=logo.png ./Demeter.py 
 
