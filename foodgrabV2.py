@@ -304,8 +304,14 @@ def process_excel(item):
     all_data_product = item.fina_data
     total_category_list = item.total_category_list
 
-    all_excel_data_product = []
-    all_excel_data_category = []
+    all_excel_data_product = [['demo', '必填', '必填\n校验是否属于 MODIFIER / SINGLE / GROUP', '必填\n校验字符长度 (64)',
+                              '必填\n校验名称是否能对应categoryList的记录',
+                              '非必填', '非必填\n如有填，校验字符长度 (128)',
+                              '必填\n校验是否是数字\n最高数9999999999.99',
+                              '必填\n校验是否是数字', '必填\n校验是否是数字\n校验数字是否大于min',
+                              '非必填\n校验图片是否已上传', '非必填']]
+    all_excel_data_category = [['demo', '必填\n校验字符长度 (64)\n校验是否有重名', '非必填\n如有填，校验字符长度 (128)',
+                               '非必填\n校验图片是否已上传']]
     for dd in all_data_product:
         all_excel_data_product.append(
             [dd.get('id'), dd.get('product_id'), dd.get('product_type'), dd.get('product_name'),
@@ -317,19 +323,19 @@ def process_excel(item):
             [cc.get('category_id'), cc.get('category_name'), cc.get('category_description'),
              cc.get('category_image')])
 
-    columns_sheet_category = [("categoryId"), ("categoryName"), ("description_Default"), ("categoryImage")]
+    columns_sheet_category = ["categoryId", "categoryName", "description_Default", "categoryImage"]
 
-    columns_sheet_product = [("productId"), ("posProductId"), ("productType"), ("name"), ("category"),
-                             ("subPosProductIds"), ("description"), ("price"), ("min"), ("max"), ("images"),
-                             ("blockList")]
+    columns_sheet_product = ["productId", "posProductId", "productType", "name", "category",
+                             "subPosProductIds", "description", "price", "min", "max", "images",
+                             "blockList"]
 
     xlsx_path = os.path.join(homedir, "Aim_menu", "food_grab",
                              f"{item.store_name}_{item.language}_V2.xlsx")
     # toExcel(columns, all_excel_data, xlsx_path)
-    df1 = pd.DataFrame(all_excel_data_category, columns=columns_sheet_category, index=None)
+    df1 = pd.DataFrame(all_excel_data_category, columns=columns_sheet_category)
     # df1.index = range(1, len(df1) + 1)
 
-    df2 = pd.DataFrame(all_excel_data_product, columns=columns_sheet_product, index=None)
+    df2 = pd.DataFrame(all_excel_data_product, columns=columns_sheet_product)
     # df2.index = range(1, len(df2) + 1)
     with pd.ExcelWriter(xlsx_path) as writer:
 
