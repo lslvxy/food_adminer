@@ -309,19 +309,32 @@ def process_excel(item):
     all_data_product = item.fina_data
     total_category_list = item.total_category_list
 
-    all_excel_data_product = [['demo', '必填',
-                              '必填\n校验是否属于 MODIFIER / SINGLE / GROUP',
-                              '必填\n校验字符长度 (64)',
-                              '必填\n校验名称是否能对应categoryList的记录',
-                              '非必填',
-                              '非必填\n如有填，校验字符长度 (128)',
-                              '必填\n校验是否是数字\n最高数9999999999.99',
-                              '必填\n校验是否是数字',
-                              '必填\n校验是否是数字\n校验数字是否大于min',
-                              '非必填\n校验图片是否已上传',
-                              '非必填']]
-    all_excel_data_category = [['demo', '必填\n校验字符长度 (64)\n校验是否有重名', '非必填\n如有填，校验字符长度 (128)',
-                               '非必填\n校验图片是否已上传']]
+    all_excel_data_product = [
+        ['This behavior table describes,To import data, please start on line 3',
+         'This is your unique product ID',
+         'Indicate where this is an Item, Modifier or Modifier Group(Required)',
+         'The name of the Item, Modifier or Modifier Group(Required)',
+         'The name of the category for the item. The name need to correspond with the category in \'categoryList\' or an existing category in backoffice.(Optional)',
+         'This behavior table describes,To import data, please start on line 3',
+         'The description of Item, Modifier or Modifier Group. Max 128 characters',
+         'The price of the Item or Modifier(Required)',
+         'The minimum number of options to select for Modifier Group(Required)',
+         'The maximum number of options to select for Modifier Group(Required)',
+         'The file name of the image for this Item or Modifier(Optional)',
+         'The posProductID of the Modifier the will be excluded from an item. Use | as a separator.(Optional)']]
+    all_excel_data_category = [['This behavior table describes,To import data, please start on line 3',
+                                'Fill in the new categories to create. The name need to correspond with the \'category\' under productLis',
+                                'The description of Item, Modifier or Modifier Group. Max 128 characters',
+                                'The file name of the image for this category']]
+    all_excel_data_lang_zh = [['This behavior table describes,To import data, please start on line 3',
+                               'This is the unique product ID of the Item, Modifier Group or Modifier. The ID needs to correspond with the \'posProductId\' under productList.(Required)',
+                               'The Chinese name of the Item, Modifier or Modifier Group(Required)',
+                               'The Chinese description of Item, Modifier or Modifer Group. Max 128 characters(Required)']]
+    all_excel_data_lang_en = [['This behavior table describes,To import data, please start on line 3',
+                               'This is the unique product ID of the Item, Modifier Group or Modifier. The ID needs to correspond with the \'posProductId\' under productList.(Required)',
+                               'The English name of the Item, Modifier or Modifier Group(Required)',
+                               'The English description of Item, Modifier or Modifer Group. Max 128 characters(Required)']]
+
     for dd in all_data_product:
         all_excel_data_product.append(
             [dd.get('id'), dd.get('product_id'), dd.get('product_type'), dd.get('product_name'),
@@ -338,6 +351,7 @@ def process_excel(item):
     columns_sheet_product = ["productId", "posProductId", "productType", "name", "category",
                              "subPosProductIds", "description", "price", "min", "max", "images",
                              "blockList"]
+    columns_sheet_lang = ["ProductId", "posProductId(Required)", "name(Required)", "description(Required)"]
 
     xlsx_path = os.path.join(homedir, "Aim_menu", "food_panda",
                              f"{item.store_name}_{item.language}_V2.xlsx")
@@ -347,10 +361,17 @@ def process_excel(item):
 
     df2 = pd.DataFrame(all_excel_data_product, columns=columns_sheet_product)
     # df2.index = range(1, len(df2) + 1)
+
+    df3 = pd.DataFrame(all_excel_data_lang_zh, columns=columns_sheet_lang)
+    df4 = pd.DataFrame(all_excel_data_lang_en, columns=columns_sheet_lang)
+
     with pd.ExcelWriter(xlsx_path) as writer:
 
         df1.to_excel(writer, sheet_name='categoryList', index=False)
         df2.to_excel(writer, sheet_name='productList', index=False)
+        df3.to_excel(writer, sheet_name='zh-CN', index=False)
+        df3.to_excel(writer, sheet_name='th-TH', index=False)
+        df4.to_excel(writer, sheet_name='en-US', index=False)
         # writer.sheets['categoryList'].delete_rows(4)
         # writer.sheets['productList'].delete_rows(4)
 
