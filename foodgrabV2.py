@@ -323,7 +323,7 @@ def process_excel(item):
             [cc.get('category_id'), cc.get('category_name'), cc.get('category_description'),
              cc.get('category_image')])
 
-    columns_sheet_category = ["categoryId", "categoryName", "description_Default", "categoryImage"]
+    columns_sheet_category = ["categoryID", "categoryName(Optional)", "categoryDescription(Optional)", "categoryimage(Optional)"]
 
     columns_sheet_product = ["productId", "posProductId", "productType", "name", "category",
                              "subPosProductIds", "description", "price", "min", "max", "images",
