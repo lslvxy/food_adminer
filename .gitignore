@@ -26,3 +26,8 @@ classes
 logs
 .itest
 # ignore SpecificStarter.java
+/Demeter.build/
+/Demeter.dist/
+/Demeter.app/
+/Demeter.zip
+/Demeter.spec
