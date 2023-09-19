@@ -11,4 +11,5 @@ python -m nuitka --follow-imports --standalone  --disable-console --enable-plugi
 
 
 python3 -m nuitka --follow-imports --standalone --macos-create-app-bundle --disable-console --enable-plugin=pyside6 --macos-app-icon=logo.png ./Demeter.py 
+python3 -m nuitka --follow-imports --standalone --macos-create-app-bundle --disable-console --enable-plugin=pyside6 --windows-icon-from-ico=logo.png ./Demeter.py 
 
