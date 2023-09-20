@@ -258,13 +258,12 @@ def process_item(item):
 def replace_sub_id(_list, delete_ids):
     for p_id, data in _list.items():
         sub_product_ids = data.get('sub_product_ids')
-        category_name = data.get('category_name')
         if not sub_product_ids:
             continue
         for _old, _new in delete_ids.items():
             new_category_name = _list.get(_new).get('category_name')
-            if category_name and new_category_name not in category_name:
-                data['category_name'] = '|'.join([category_name, new_category_name])
+            if data.get('category_name') and new_category_name not in data['category_name']:
+                data['category_name'] = '|'.join([data.get('category_name'), new_category_name])
             if _old in sub_product_ids.split('|'):
                 sub_product_ids = sub_product_ids.replace(_old, _new)
         data['sub_product_ids'] = sub_product_ids

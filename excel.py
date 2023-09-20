@@ -1,17 +1,16 @@
-import pandas as pd
-import numpy as np
+import sqlite3
 
-# Seeding random data from numpy
-np.random.seed(24)
+conn = sqlite3.connect('./data.sqlite3')
 
-# Making the DatFrame
-df = pd.DataFrame({'A': np.linspace(1, 10, 10)})
-df = pd.concat([df, pd.DataFrame(np.random.randn(10, 4),
-                                 columns=list('BCDE'))], axis=1)
+# 获取游标
+cur = conn.cursor()
 
-# DataFrame without any styling
-print("Original DataFrame:\n")
-print(df)
-print("\nModified Stlying DataFrame:")
-df.style.set_properties(**{'background-color': 'red',
-                           'color': 'green'})
+# 执行SQL
+cur.execute("select * from data")
+
+# 获取查询结果
+print(cur.fetchall())  # 取出所有（返回列表套元组或空列表）
+
+# 记得关闭游标和连接，避免内存泄露
+cur.close()
+conn.close()
