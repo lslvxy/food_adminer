@@ -70,6 +70,7 @@ def parse_foodgrabV2(page_url, variables):
     process_final_list(item, conn)
     process_excel(item, conn)
     parse_foodgrabV1(item, variables)
+    return True
 
 
 def clean_data(item):
@@ -301,7 +302,7 @@ def process_product(item):
             else:
                 product_name_category_map[product_name] = category_name
             product_description = product.get('description')
-            product_price = fix_price(product.get('priceV2').get('amountDisplay'))
+            product_price = fix_price(str(product.get('priceV2').get('amountDisplay')))
             if product['imgHref']:
                 product_image = fixStr(product['name']) + '.jpg'
             else:
@@ -386,7 +387,7 @@ def process_item(item):
                 modifier_id = f'GO{group_data.get("product_id")}{m_idx}{timestamp}'
             modifier_name = modifier_item.get('name')
 
-            item_price = fix_price(modifier_item.get('priceV2').get('amountDisplay'))
+            item_price = fix_price(str(modifier_item.get('priceV2').get('amountDisplay')))
             result_item = {'id': '',
                            'product_id': modifier_id,
                            'product_type': 'MODIFIER',
@@ -632,7 +633,8 @@ def process_excel(item, conn):
         df4.to_excel(writer, sheet_name='th-TH', index=False)
         df5.to_excel(writer, sheet_name='ms-MY', index=False)
         df6.to_excel(writer, sheet_name='en-US', index=False)
-    print("Collection complete")
+    print("Write file to " + xlsx_path)
+    # print("Collection complete")
 
 
 def parse_foodgrabV1(item, variables):
@@ -782,7 +784,8 @@ def parse_foodgrabV1(item, variables):
                "modifier_description_th", "modifier_description_cn", "options_price", "open_field1",
                "open_field2", "open_field3", "open_field4", "open_field5"]
     toExcel(columns, food_grab_excel_list, xlsx_path)
-    print("Collection complete")
+    print("Write file to " + xlsx_path)
+    # print("Collection complete")
     return True
 
 # if __name__ == '__main__':

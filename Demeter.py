@@ -158,6 +158,7 @@ class mywindow(QWidget, Ui_Widget):
                 # self.setLayout(self.mainLayout)
                 try:
                     parse_foodgrabV2(page_url, variables)
+                    print("Collection complete")
                 except Exception as e:
                     print('Collection Fail!')
                     print("Collection Exception: %s" % e)
@@ -174,6 +175,7 @@ class mywindow(QWidget, Ui_Widget):
                 # self.setLayout(self.mainLayout)
                 try:
                     parse_foodpandaV2(page_url, variables)
+                    print("Collection complete")
                 except Exception as e:
                     print('Collection Fail!')
                     print("Collection Exception: %s" % e)

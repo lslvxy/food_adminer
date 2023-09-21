@@ -7,16 +7,20 @@ import requests
 import pandas as pd
 from datetime import datetime
 
-from utils import isEn, init_path, fixStr
+from utils import isEn, init_path, fixStr, fix_price
 from utils import isCn
 from utils import isTh
 import pathlib
+from sqlite3 import OperationalError
+import sqlite3
+import shutil
+from pathlib import Path
 
 bc = logging.basicConfig(level=logging.INFO, format='%(asctime)s  - %(message)s')
 
 
 class FoodPandaItem:
-    spider_type = 'food_panda'
+    biz_type = 'food_panda'
     id = ''
     language = ''
     store_name = ''
@@ -33,6 +37,10 @@ class FoodPandaItem:
 
 
 def parse_foodpandaV2(page_url, variables):
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    batch_no = f'panda{timestamp}'
+    print(f'run batch no:{batch_no}')
+
     root_data = fetch_data(page_url, variables)
     store_data = root_data.get('data', None)
 
@@ -44,6 +52,7 @@ def parse_foodpandaV2(page_url, variables):
         print("Failure to parse menu data")
         return
     item = FoodPandaItem()
+    item.batchNo = batch_no
     item.id = store_data.get('ID')
     item.store_name = store_data.get('name')
     item.photoHref = store_data.get('photoHref')
@@ -54,16 +63,95 @@ def parse_foodpandaV2(page_url, variables):
     item.menus = menus[0].get('menu_categories')
     item.toppings = menus[0].get('toppings')
     item.language = variables['language']
+
+    clean_data(item)
+    prepare_data(item)
+
     compose_images(item)
-    save_images(item)
+    if not '?img=no' in page_url:
+        save_images(item)
     process_category(item)
     process_product(item)
     process_group(item)
     process_item(item)
-    process_final_list(item)
-    process_excel(item)
+
+    conn = sqlite3.connect(item.db_path)
+    save_to_db(item, conn)
+    process_final_list(item, conn)
+    process_excel(item, conn)
 
     parse_foodpandaV1(item, variables)
+    return True
+
+
+def clean_data(item):
+    homedir = str(pathlib.Path.home())
+    store_path = os.path.join(homedir, "Aim_menu", item.biz_type, f"{fixStr(item.store_name.strip())}")
+    if os.path.exists(store_path):
+        shutil.rmtree(store_path)
+    print("remove store dir")
+
+
+def prepare_data(item):
+    homedir = str(pathlib.Path.home())
+    db_path = os.path.join(homedir, "Aim_menu", ".data.db")
+    item.db_path = db_path
+    if not os.path.exists(db_path):
+        Path(db_path).touch()
+        print("db init success！")
+    conn = sqlite3.connect(db_path)
+    conn.set_trace_callback(print)
+
+    cur = conn.cursor()
+    try:
+        sql = """CREATE TABLE "product_list" (
+                  "batch_no" varchar(64) NOT NULL,
+                  "biz_type" varchar(16) NOT NULL,
+                  "pos_product_id" varchar(64) NOT NULL,
+                  "product_type" varchat(32) NOT NULL,
+                  "name" varchar(255),
+                  "category" varchar(255),
+                  "sub_product_ids" text(2048),
+                  "description" varchar(255),
+                  "price" varchar(32),
+                  "min" varchar(32),
+                  "max" varchar(32),
+                  "images" varchar(255),
+                  "block_list" varchar(255)
+                );"""
+        sql2 = """CREATE TABLE "product_list_merge" (
+                          "batch_no" varchar(64) NOT NULL,
+                          "biz_type" varchar(16) NOT NULL,
+                          "pos_product_id" varchar(64) NOT NULL,
+                          "product_type" varchat(32) NOT NULL,
+                          "name" varchar(255),
+                          "category" varchar(255),
+                          "sub_product_ids" text(2048),
+                          "description" varchar(255),
+                          "price" varchar(32),
+                          "min" varchar(32),
+                          "max" varchar(32),
+                          "images" varchar(255),
+                          "block_list" varchar(255)
+                        );"""
+        cur.execute(sql)
+        cur.execute(sql2)
+        print("create table success")
+        return True
+    except OperationalError as o:
+        print(str(o))
+        pass
+        if str(o) == "table product_list already exists":
+            return True
+        return False
+    except Exception as e:
+        print(e)
+        return False
+    finally:
+        cur.close()
+        conn.close()
+
+    pass
 
 
 def fetch_data(page_url, variables):
@@ -129,8 +217,13 @@ def save_images(item):
 
 def process_category(item):
     total_category_list = []
+    category_name_set = set()
     for category in item.menus:
+        if not category['products']:
+            continue
         category_name = f"{fixStr(category['name'])}"
+        category_name_set.add(category_name)
+    for category_name in category_name_set:
         category_data = {
             'category_id': '',
             'category_name': category_name,
@@ -139,6 +232,50 @@ def process_category(item):
         }
         total_category_list.append(category_data)
     item.total_category_list = total_category_list
+
+
+def save_to_db(item, conn):
+    total_product_map = item.total_product_map
+    total_group_map = item.total_group_map
+    total_modifier_map = item.total_modifier_map
+    all_data_product = dict(**dict(**total_product_map, **total_group_map), **total_modifier_map)
+    product_data_sql_list = []
+    for dd in all_data_product.values():
+        product_data_sql = (
+            item.batchNo, item.biz_type, dd.get('product_id'), dd.get('product_type'), dd.get('product_name'),
+            dd.get('category_name'), ','.join(dd.get('sub_product_ids')), dd.get('product_description'),
+            dd.get('product_price'), dd.get('selection_range_min'), dd.get('selection_range_max'),
+            dd.get('product_image'))
+        product_data_sql_list.append(product_data_sql)
+    cur = conn.cursor()
+    try:
+        insert_many_sql = """INSERT INTO "product_list" ("batch_no", "biz_type","pos_product_id", "product_type", "name", 
+                        "category", "sub_product_ids", "description", "price", "min", "max", "images")
+                         VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+        cur.executemany(insert_many_sql, product_data_sql_list)
+        print("save origin data:", cur.rowcount)
+        conn.commit()
+    except Exception as e:
+        logging.error(str(e))
+        return False
+    finally:
+        cur.close()
+
+
+def save_to_merge_db(list, conn):
+    cur = conn.cursor()
+    try:
+        insert_many_sql = """INSERT INTO "product_list_merge" ("batch_no", "biz_type","pos_product_id", "product_type", "name", 
+                        "category", "sub_product_ids", "description", "price", "min", "max", "images")
+                         VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
+        cur.executemany(insert_many_sql, list)
+        print("save data after merge:", cur.rowcount)
+        conn.commit()
+    except Exception as e:
+        logging.error(str(e))
+        return False
+    finally:
+        cur.close()
 
 
 def process_product(item):
@@ -151,14 +288,17 @@ def process_product(item):
         for p_idx, product in enumerate(source_product_list):
             product_id = str(product.get('id'))
             if not product_id:
-                timestamp = datetime.timestamp(datetime.now())
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 product_id = f'SI{p_idx}{timestamp}'
                 product['id'] = product_id
             product_name = fixStr(product.get('name'))
             product_description = product.get('description')
             product_variations = product.get('product_variations')[0]
-            product_price = product_variations.get('price')
-            product_image = fixStr(product['name']) + '.jpg'
+            product_price = fix_price(str(product_variations.get('price')))
+            if product['file_path']:
+                product_image = fixStr(product['name']) + '.jpg'
+            else:
+                product_image = ''
             product_data = {'id': '',
                             'product_id': product_id,
                             'product_type': 'SINGLE',
@@ -181,10 +321,10 @@ def process_product(item):
 
             if modifier_groups:
                 product_data['modifier_groups'] = modifier_groups
-                all_sub_group_id = []
+                all_sub_group_id = set()
                 for modifier_group in modifier_groups:
-                    all_sub_group_id.append(str(modifier_group.get('id')))
-                product_data['sub_product_ids'] = '|'.join(all_sub_group_id)
+                    all_sub_group_id.add(str(modifier_group.get('id')))
+                product_data['sub_product_ids'] = all_sub_group_id
 
             total_product_map[product_id] = product_data
     item.total_product_map = total_product_map
@@ -216,10 +356,10 @@ def process_group(item):
             modifiers = modifier_group.get('options')
             if modifiers:
                 group_data['modifiers'] = modifiers
-                all_sub_modifiers_id = []
+                all_sub_modifiers_id = set()
                 for modifier in modifiers:
-                    all_sub_modifiers_id.append(str(modifier.get('id')))
-                group_data['sub_product_ids'] = '|'.join(all_sub_modifiers_id)
+                    all_sub_modifiers_id.add(str(modifier.get('id')))
+                group_data['sub_product_ids'] = all_sub_modifiers_id
 
             total_group_map[group_id] = group_data
     item.total_group_map = total_group_map
@@ -236,7 +376,7 @@ def process_item(item):
             modifier_id = str(modifier_item.get('id'))
             modifier_name = modifier_item.get('name')
 
-            item_price = modifier_item.get('price')
+            item_price = fix_price(str(modifier_item.get('price')))
             result_item = {'id': '',
                            'product_id': modifier_id,
                            'product_type': 'MODIFIER',
@@ -273,108 +413,198 @@ def replace_sub_id(_list, delete_ids):
 
 def build_key(data):
     key = '_'.join([data.get('product_type'), data.get('product_name'),
-                    data.get('sub_product_ids'),
                     str(data.get('product_price', '')), str(data.get('selection_range_min', '')),
                     str(data.get('selection_range_max', ''))])
     return key
 
 
-def process_final_list(item):
-    total_product_map = item.total_product_map
-    total_group_map = item.total_group_map
-    total_modifier_map = item.total_modifier_map
-    delete_ids = {}
-    all_data_product = dict(**dict(**total_product_map, **total_group_map), **total_modifier_map)
-    for i in range(3):
-        all_data = {}
-        for productId, _data in all_data_product.items():
-            key = build_key(_data)
-            if key in all_data:
-                ori_product_id = all_data.get(key)
-                delete_ids[productId] = ori_product_id
-            else:
-                all_data[key] = productId
-        all_data_product = replace_sub_id(all_data_product, delete_ids)
+def update_sub_ids(product_type, ids_str, conn, batch_no):
+    id_list = ids_str.split(',')
+    if len(id_list) <= 1:
+        return
+    merge_id = id_list[0]
+    try:
+        for _idx, _id in enumerate(id_list):
+            if _idx == 0:
+                continue
+            update_sub_ids_sql = """UPDATE product_list_merge SET 
+            sub_product_ids=REPLACE(sub_product_ids,?,?) WHERE  batch_no=? and product_type=? and sub_product_ids LIKE ?;"""
+            cur = conn.cursor()
 
-    if delete_ids:
-        for _id in delete_ids.keys():
-            if _id in all_data_product:
-                del all_data_product[_id]
-    item.fina_data = all_data_product.values()
+            cur.execute(update_sub_ids_sql, (_id, merge_id, batch_no, product_type, f'%{_id}%'))
+            # conn.set_trace_callback(logging.info)
+        conn.commit()
+    except Exception as e:
+        logging.error(str(e))
+        return False
+    finally:
+        cur.close()
 
 
-def process_excel(item):
+# 爬虫去重逻辑
+# 1. (single) name+price 去重
+# 2. (group) name+min+max 去重（如果可以，就通过blocklist实现 - P1）
+# 3. (modifier) name+price 去重（如果可以，就通过blocklist实现 - P1）
+
+def process_final_list(item, conn):
+    # product
+    product_list_sql = """SELECT DISTINCT batch_no, biz_type,pos_product_id,product_type,name, 
+    group_concat(category,'|') as category,
+    group_concat(DISTINCT sub_product_ids) as sub_product_ids,description,price,min,max,images FROM product_list WHERE batch_no=? and product_type='SINGLE' 
+    GROUP BY name,price;  """
+    cur = conn.cursor()
+    try:
+        cur.execute(product_list_sql, (item.batchNo,))
+        product_list = cur.fetchall()
+    except Exception as e:
+        logging.error(str(e))
+        return False
+    finally:
+        cur.close()
+    save_to_merge_db(product_list, conn)
+
+    # group
+    group_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,batch_no,
+    biz_type,pos_product_id,product_type,name,  
+    category,group_concat(DISTINCT sub_product_ids) as sub_product_ids,description,price,min,max,images 
+    FROM product_list WHERE batch_no=? and product_type='GROUP' GROUP BY name,min,max;  """
+
+    cur = conn.cursor()
+    try:
+        cur.execute(group_list_sql, (item.batchNo,))
+        group_list = cur.fetchall()
+        fixed_group_list = []
+        for gg in group_list:
+            pos_product_ids = gg[0]
+            id_list = pos_product_ids.split(',', 1)
+            if len(id_list) == 2:
+                update_sub_ids('SINGLE', pos_product_ids, conn, item.batchNo)
+            fixed_group_list.append(
+                (gg[1], gg[2], gg[3], gg[4], gg[5], gg[6], gg[7], gg[8], gg[9], gg[10], gg[11], gg[12]))
+    except Exception as e:
+        logging.error(str(e))
+        return False
+    finally:
+        cur.close()
+    save_to_merge_db(fixed_group_list, conn)
+    # modifier
+    modifier_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,batch_no, biz_type,pos_product_id,product_type,name,  
+        category,sub_product_ids,description,price,min,max,images 
+        FROM product_list WHERE batch_no=? and product_type='MODIFIER' GROUP BY name,price;"""
+
+    cur = conn.cursor()
+    try:
+        cur.execute(modifier_list_sql, (item.batchNo,))
+        modifier_list = cur.fetchall()
+        fixed_modifier_list = []
+        for gg in modifier_list:
+            pos_product_ids = gg[0]
+            id_list = pos_product_ids.split(',', 1)
+            if len(id_list) == 2:
+                update_sub_ids('GROUP', pos_product_ids, conn, item.batchNo)
+            fixed_modifier_list.append(
+                (gg[1], gg[2], gg[3], gg[4], gg[5], gg[6], gg[7], gg[8], gg[9], gg[10], gg[11], gg[12]))
+    except Exception as e:
+        logging.error(str(e))
+        return False
+    finally:
+        cur.close()
+    save_to_merge_db(fixed_modifier_list, conn)
+
+
+def process_excel(item, conn):
     homedir = str(pathlib.Path.home())
-    all_data_product = item.fina_data
     total_category_list = item.total_category_list
 
     all_excel_data_product = [
-        ['This behavior table describes,To import data, please start on line 3',
-         'This is your unique product ID',
-         'Indicate where this is an Item, Modifier or Modifier Group(Required)',
-         'The name of the Item, Modifier or Modifier Group(Required)',
-         'The name of the category for the item. The name need to correspond with the category in \'categoryList\' or an existing category in backoffice.(Optional)',
-         'This behavior table describes,To import data, please start on line 3',
-         'The description of Item, Modifier or Modifier Group. Max 128 characters',
-         'The price of the Item or Modifier(Required)',
-         'The minimum number of options to select for Modifier Group(Required)',
-         'The maximum number of options to select for Modifier Group(Required)',
-         'The file name of the image for this Item or Modifier(Optional)',
-         'The posProductID of the Modifier the will be excluded from an item. Use | as a separator.(Optional)']]
-    all_excel_data_category = [['This behavior table describes,To import data, please start on line 3',
-                                'Fill in the new categories to create. The name need to correspond with the \'category\' under productLis',
-                                'The description of Item, Modifier or Modifier Group. Max 128 characters',
-                                'The file name of the image for this category']]
-    all_excel_data_lang_zh = [['This behavior table describes,To import data, please start on line 3',
-                               'This is the unique product ID of the Item, Modifier Group or Modifier. The ID needs to correspond with the \'posProductId\' under productList.(Required)',
-                               'The Chinese name of the Item, Modifier or Modifier Group(Required)',
-                               'The Chinese description of Item, Modifier or Modifer Group. Max 128 characters(Required)']]
-    all_excel_data_lang_en = [['This behavior table describes,To import data, please start on line 3',
-                               'This is the unique product ID of the Item, Modifier Group or Modifier. The ID needs to correspond with the \'posProductId\' under productList.(Required)',
-                               'The English name of the Item, Modifier or Modifier Group(Required)',
-                               'The English description of Item, Modifier or Modifer Group. Max 128 characters(Required)']]
+        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
+         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.',
+         'Indicate where this is an SINGLE, MODIFIER or GROUP. Single refers to the main item. Group refers to Modifier group.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP. Max 32 characters.',
+         '(REQUIRED) The name of the category for the item. The name need to correspond with the category in \'categoryList\' or an existing category in backoffice.',
+         '(OPTIONAL) The PosProductIDs of the item modifiers that should be a subset. Use | to separate multiple IDs.',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP. Max 64 characters',
+         '(REQUIRED) The price of the Item or Modifier. Leave blank for GROUP.',
+         '(REQUIRED) The minimum number of options to select for GROUP. Leave blank for SINGLE and MODIFIER.',
+         '(REQUIRED) The maximum number of options to select for GROUP. Leave blank for SINGLE and MODIFIER.',
+         '(OPTIONAL) The file name of the image for this SINGLE or MODIFIER. Ensure it correspond with the actual image file.',
+         '(OPTIONAL) The posProductID of the MODIFIER to be excluded from an item. Use | to separate multiple IDs.']]
+    all_excel_data_category = [
+        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
+         '(REQUIRED) Fill in the new categories to create. The name need to correspond with the \'category\' under productList. Only for new categories. Max 32 characters.',
+         '(OPTIONAL) The description of category. Max 64 characters.',
+         '(OPTIONAL) The file name of the image for this SINGLE or MODIFIER. Ensure it correspond with the actual image file.']]
+    all_excel_data_lang_zh = [
+        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
+         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.The ID needs to correspond with the \'posProductId\' under productList.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Chinese. Max 32 characters.',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Chinese. Max 64 characters. Only required if you have input a description under productList']]
+    all_excel_data_lang_th = [
+        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
+         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.The ID needs to correspond with the \'posProductId\' under productList.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Thai. Max 32 characters.',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Thai. Max 64 characters. Only required if you have input a description under productList']]
+    all_excel_data_lang_ms = [
+        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
+         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.The ID needs to correspond with the \'posProductId\' under productList.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Malay. Max 32 characters.',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Malay. Max 64 characters. Only required if you have input a description under productList']]
+    all_excel_data_lang_en = [
+        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
+         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.The ID needs to correspond with the \'posProductId\' under productList.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in English. Max 32 characters.',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in English. Max 64 characters. Only required if you have input a description under productList']]
+
+    product_list_sql = """SELECT pos_product_id,product_type,name,category,REPLACE(sub_product_ids,',','|') as sub_product_ids,description,price,min,max,images,block_list FROM product_list_merge WHERE batch_no=?;"""
+    cur = conn.cursor()
+    try:
+        cur.execute(product_list_sql, (item.batchNo,))
+        all_data_product = cur.fetchall()
+    except Exception as e:
+        logging.error(str(e))
+        return False
+    finally:
+        cur.close()
 
     for dd in all_data_product:
         all_excel_data_product.append(
-            [dd.get('id'), dd.get('product_id'), dd.get('product_type'), dd.get('product_name'),
-             dd.get('category_name'), dd.get('sub_product_ids'), dd.get('product_description'),
-             dd.get('product_price'), dd.get('selection_range_min'), dd.get('selection_range_max'),
-             dd.get('product_image'), dd.get('blockList')])
+            ['', dd[0], dd[1], dd[2], dd[3], dd[4], dd[5], dd[6], dd[7], dd[8], dd[9], ''])
+
     for cc in total_category_list:
         all_excel_data_category.append(
             [cc.get('category_id'), cc.get('category_name'), cc.get('category_description'),
              cc.get('category_image')])
 
-    columns_sheet_category = ["categoryId", "categoryName", "description_Default", "categoryImage"]
+    columns_sheet_category = ["categoryID", "categoryName", "categoryDescription",
+                              "categoryimage"]
 
-    columns_sheet_product = ["productId", "posProductId", "productType", "name", "category",
-                             "subPosProductIds", "description", "price", "min", "max", "images",
+    columns_sheet_product = ["productId", "posProductId", "productType", "name",
+                             "category", "subPosProductIds", "description",
+                             "price", "min", "max", "images",
                              "blockList"]
-    columns_sheet_lang = ["ProductId", "posProductId(Required)", "name(Required)", "description(Required)"]
+
+    columns_sheet_lang = ["ProductId", "posProductId", "name", "description"]
 
     xlsx_path = os.path.join(homedir, "Aim_menu", "food_panda",
                              f"{item.store_name}_{item.language}_V2.xlsx")
-    # toExcel(columns, all_excel_data, xlsx_path)
+
     df1 = pd.DataFrame(all_excel_data_category, columns=columns_sheet_category)
-    # df1.index = range(1, len(df1) + 1)
-
     df2 = pd.DataFrame(all_excel_data_product, columns=columns_sheet_product)
-    # df2.index = range(1, len(df2) + 1)
-
     df3 = pd.DataFrame(all_excel_data_lang_zh, columns=columns_sheet_lang)
-    df4 = pd.DataFrame(all_excel_data_lang_en, columns=columns_sheet_lang)
+    df4 = pd.DataFrame(all_excel_data_lang_th, columns=columns_sheet_lang)
+    df5 = pd.DataFrame(all_excel_data_lang_ms, columns=columns_sheet_lang)
+    df6 = pd.DataFrame(all_excel_data_lang_en, columns=columns_sheet_lang)
 
     with pd.ExcelWriter(xlsx_path) as writer:
-
         df1.to_excel(writer, sheet_name='categoryList', index=False)
         df2.to_excel(writer, sheet_name='productList', index=False)
         df3.to_excel(writer, sheet_name='zh-CN', index=False)
-        df3.to_excel(writer, sheet_name='th-TH', index=False)
-        df4.to_excel(writer, sheet_name='en-US', index=False)
-        # writer.sheets['categoryList'].delete_rows(4)
-        # writer.sheets['productList'].delete_rows(4)
+        df4.to_excel(writer, sheet_name='th-TH', index=False)
+        df5.to_excel(writer, sheet_name='ms-MY', index=False)
+        df6.to_excel(writer, sheet_name='en-US', index=False)
 
-    print("Collection complete")
+    print("Write file to " + xlsx_path)
+    # print("Collection complete")
 
 
 def parse_foodpandaV1(item, variables):
@@ -576,7 +806,7 @@ def parse_foodpandaV1(item, variables):
         os.remove(xlsx_path)
     print("Write file to " + xlsx_path)
     df.to_excel(xlsx_path, index=False)
-    print("Collection complete")
+    # print("Collection complete")
     return True
 
 # if __name__ == '__main__':
