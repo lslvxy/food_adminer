@@ -45,6 +45,7 @@ def parse_foodgrabV2(page_url, variables):
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     batch_no = f'grab{timestamp}'
     print(f'run batch no:{batch_no}')
+    logging.info(f'run batch no:{batch_no}')
 
     store_data = fetch_data(page_url, variables)
     item = FoodGrabItem()

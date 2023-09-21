@@ -3,6 +3,8 @@ import logging
 import time
 import os
 import re
+import urllib
+
 import requests
 import pandas as pd
 from datetime import datetime
@@ -40,6 +42,7 @@ def parse_foodpandaV2(page_url, variables):
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     batch_no = f'panda{timestamp}'
     print(f'run batch no:{batch_no}')
+    logging.info(f'run batch no:{batch_no}')
 
     root_data = fetch_data(page_url, variables)
     store_data = root_data.get('data', None)
@@ -238,12 +241,14 @@ def save_to_db(item, conn):
     total_product_map = item.total_product_map
     total_group_map = item.total_group_map
     total_modifier_map = item.total_modifier_map
-    all_data_product = dict(**dict(**total_product_map, **total_group_map), **total_modifier_map)
+    # all_data_product = dict(**dict(**total_product_map, **total_group_map), **total_modifier_map)
+    all_data_product = total_product_map + total_group_map + total_modifier_map
     product_data_sql_list = []
-    for dd in all_data_product.values():
+    for dd in all_data_product:
         product_data_sql = (
             item.batchNo, item.biz_type, dd.get('product_id'), dd.get('product_type'), dd.get('product_name'),
-            dd.get('category_name'), ','.join(dd.get('sub_product_ids')), dd.get('product_description'),
+            urllib.parse.quote_plus(dd.get('category_name')), ','.join(dd.get('sub_product_ids')),
+            dd.get('product_description'),
             dd.get('product_price'), dd.get('selection_range_min'), dd.get('selection_range_max'),
             dd.get('product_image'))
         product_data_sql_list.append(product_data_sql)
@@ -279,7 +284,7 @@ def save_to_merge_db(list, conn):
 
 
 def process_product(item):
-    total_product_map = {}
+    total_product_map = []
     for category in item.menus:
         category_name = f"{fixStr(category['name'])}"
         source_product_list = category.get('products')
@@ -326,14 +331,14 @@ def process_product(item):
                     all_sub_group_id.add(str(modifier_group.get('id')))
                 product_data['sub_product_ids'] = all_sub_group_id
 
-            total_product_map[product_id] = product_data
+            total_product_map.append(product_data)
     item.total_product_map = total_product_map
 
 
 def process_group(item):
     total_product_map = item.total_product_map
-    total_group_map = {}
-    for product_data in total_product_map.values():
+    total_group_map = []
+    for product_data in total_product_map:
         modifier_groups = product_data.get('modifier_groups')
         if not modifier_groups:
             continue
@@ -361,14 +366,14 @@ def process_group(item):
                     all_sub_modifiers_id.add(str(modifier.get('id')))
                 group_data['sub_product_ids'] = all_sub_modifiers_id
 
-            total_group_map[group_id] = group_data
+            total_group_map.append(group_data)
     item.total_group_map = total_group_map
 
 
 def process_item(item):
     total_group_map = item.total_group_map
-    total_modifier_map = {}
-    for group_data in total_group_map.values():
+    total_modifier_map = []
+    for group_data in total_group_map:
         modifier_items = group_data.get('modifiers')
         if not modifier_items:
             continue
@@ -390,7 +395,7 @@ def process_item(item):
                            'product_image': '',
                            'blockList': ''
                            }
-            total_modifier_map[modifier_id] = result_item
+            total_modifier_map.append(result_item)
 
     item.total_modifier_map = total_modifier_map
 
@@ -449,7 +454,7 @@ def update_sub_ids(product_type, ids_str, conn, batch_no):
 def process_final_list(item, conn):
     # product
     product_list_sql = """SELECT DISTINCT batch_no, biz_type,pos_product_id,product_type,name, 
-    group_concat(category,'|') as category,
+    GROUP_CONCAT(DISTINCT category) as category,
     group_concat(DISTINCT sub_product_ids) as sub_product_ids,description,price,min,max,images FROM product_list WHERE batch_no=? and product_type='SINGLE' 
     GROUP BY name,price;  """
     cur = conn.cursor()
@@ -555,7 +560,9 @@ def process_excel(item, conn):
          '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in English. Max 32 characters.',
          '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in English. Max 64 characters. Only required if you have input a description under productList']]
 
-    product_list_sql = """SELECT pos_product_id,product_type,name,category,REPLACE(sub_product_ids,',','|') as sub_product_ids,description,price,min,max,images,block_list FROM product_list_merge WHERE batch_no=?;"""
+    product_list_sql = """SELECT pos_product_id,product_type,name,REPLACE(category,',','|') 
+            as category,REPLACE(sub_product_ids,',','|') as sub_product_ids,description,price,min,max,images,block_list
+            FROM product_list_merge WHERE batch_no=?;"""
     cur = conn.cursor()
     try:
         cur.execute(product_list_sql, (item.batchNo,))
@@ -568,7 +575,7 @@ def process_excel(item, conn):
 
     for dd in all_data_product:
         all_excel_data_product.append(
-            ['', dd[0], dd[1], dd[2], dd[3], dd[4], dd[5], dd[6], dd[7], dd[8], dd[9], ''])
+            ['', dd[0], dd[1], dd[2], urllib.parse.unquote_plus(dd[3]), dd[4], dd[5], dd[6], dd[7], dd[8], dd[9], ''])
 
     for cc in total_category_list:
         all_excel_data_category.append(
