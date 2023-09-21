@@ -1,6 +1,7 @@
 import json
 import pathlib
 import re
+import urllib
 from urllib.parse import urlparse
 import pandas as pd
 import os
@@ -119,7 +120,8 @@ if __name__ == '__main__':
     xx['aa'] = aa
     xx['aa'] = aa
     xx['aa'] = aa
-    print(fix_price("1112.01"))
+    print(urllib.parse.quote_plus("Papaya salad, larbchili paste"))
+    print(urllib.parse.unquote_plus("Papaya+salad%2C+larbchili+paste|Papaya+salad%2C+larbchili+paste"))
 # print(url_parse('https://food.grab.com/sg/en/restaurant/mcdonald-s-jurong-green-cc-delivery/SGDD04996'))
 # print(url_parse('https://food.grab.com/my/en/restaurant/hominsan-pavilion-non-halal-delivery/MYDD12622'))
 # print(url_parse('https://food.grab.com/ph/en/restaurant/s-r-new-york-style-pizza-newport-delivery/PHGFSTI000000wz'))
