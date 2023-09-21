@@ -13,7 +13,7 @@ import requests
 import time
 from bs4 import BeautifulSoup
 
-from utils import isEn, init_path
+from utils import isEn, init_path, fix_price
 from utils import isCn
 from utils import isTh
 from utils import fixStr
@@ -242,7 +242,7 @@ def save_to_db(item, conn):
     for dd in all_data_product.values():
         product_data_sql = (
             item.batchNo, item.biz_type, dd.get('product_id'), dd.get('product_type'), dd.get('product_name'),
-            dd.get('category_name'), '|'.join(dd.get('sub_product_ids')), dd.get('product_description'),
+            dd.get('category_name'), ','.join(dd.get('sub_product_ids')), dd.get('product_description'),
             dd.get('product_price'), dd.get('selection_range_min'), dd.get('selection_range_max'),
             dd.get('product_image'))
         product_data_sql_list.append(product_data_sql)
@@ -301,7 +301,7 @@ def process_product(item):
             else:
                 product_name_category_map[product_name] = category_name
             product_description = product.get('description')
-            product_price = product.get('priceV2').get('amountDisplay')
+            product_price = fix_price(product.get('priceV2').get('amountDisplay'))
             if product['imgHref']:
                 product_image = fixStr(product['name']) + '.jpg'
             else:
@@ -386,7 +386,7 @@ def process_item(item):
                 modifier_id = f'GO{group_data.get("product_id")}{m_idx}{timestamp}'
             modifier_name = modifier_item.get('name')
 
-            item_price = modifier_item.get('priceV2').get('amountDisplay')
+            item_price = fix_price(modifier_item.get('priceV2').get('amountDisplay'))
             result_item = {'id': '',
                            'product_id': modifier_id,
                            'product_type': 'MODIFIER',
@@ -486,7 +486,7 @@ def process_final_list(item, conn):
     # product
     product_list_sql = """SELECT DISTINCT batch_no, biz_type,pos_product_id,product_type,name, 
     group_concat(category,'|') as category,
-    sub_product_ids,description,price,min,max,images FROM product_list WHERE batch_no=? and product_type='SINGLE' 
+    group_concat(DISTINCT sub_product_ids) as sub_product_ids,description,price,min,max,images FROM product_list WHERE batch_no=? and product_type='SINGLE' 
     GROUP BY name,price;  """
     cur = conn.cursor()
     try:
@@ -500,8 +500,9 @@ def process_final_list(item, conn):
     save_to_merge_db(product_list, conn)
 
     # group
-    group_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,batch_no, biz_type,pos_product_id,product_type,name,  
-    category,sub_product_ids,description,price,min,max,images 
+    group_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,batch_no,
+    biz_type,pos_product_id,product_type,name,  
+    category,group_concat(DISTINCT sub_product_ids) as sub_product_ids,description,price,min,max,images 
     FROM product_list WHERE batch_no=? and product_type='GROUP' GROUP BY name,min,max;  """
 
     cur = conn.cursor()
@@ -525,7 +526,7 @@ def process_final_list(item, conn):
     # modifier
     modifier_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,batch_no, biz_type,pos_product_id,product_type,name,  
         category,sub_product_ids,description,price,min,max,images 
-        FROM product_list WHERE batch_no=? and product_type='MODIFIER' GROUP BY name,price;  """
+        FROM product_list WHERE batch_no=? and product_type='MODIFIER' GROUP BY name,price;"""
 
     cur = conn.cursor()
     try:
@@ -590,7 +591,7 @@ def process_excel(item, conn):
          '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in English. Max 32 characters.',
          '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in English. Max 64 characters. Only required if you have input a description under productList']]
 
-    product_list_sql = """SELECT pos_product_id,product_type,name,category,sub_product_ids,description,price,min,max,images,block_list FROM product_list_merge WHERE batch_no=?;"""
+    product_list_sql = """SELECT pos_product_id,product_type,name,category,REPLACE(sub_product_ids,',','|') as sub_product_ids,description,price,min,max,images,block_list FROM product_list_merge WHERE batch_no=?;"""
     cur = conn.cursor()
     try:
         cur.execute(product_list_sql, (item.batchNo,))

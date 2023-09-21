@@ -83,6 +83,7 @@ def toExcel(title_list, data_list, file_path):
     print("Write file to " + file_path)
     df.to_excel(file_path, index=False)
 
+
 def init_path(spider_type, store_name, category_name):
     homedir = str(pathlib.Path.home())
     dir_path = os.path.join(homedir, "Aim_menu", spider_type, f"{fixStr(store_name.strip())}", category_name)
@@ -90,15 +91,35 @@ def init_path(spider_type, store_name, category_name):
         os.makedirs(dir_path)
     return dir_path
 
+
+def fix_price(price: str) -> str:
+    # clean the price string
+    trimmer = re.compile(r'[^\d.,]+')
+    trimmed = trimmer.sub('', price)
+
+    # figure out the separator which will always be "," or "." and at position -3 if it exists
+    decimal_separator = trimmed[-3:][0]
+    if decimal_separator not in [".", ","]:
+        decimal_separator = None
+
+    # re-clean now that we know which separator is the correct one
+    trimer = re.compile(rf'[^\d{decimal_separator}]+')
+    trimmed = trimer.sub('', price)
+
+    if decimal_separator == ",":
+        trimmed = trimmed.replace(",", ".")
+
+    return trimmed
+
 if __name__ == '__main__':
-    xx={}
+    xx = {}
     aa = {"a": 'a', 'b': 'b'}
-    aa['a']='aa'
-    aa['a']='aaa'
-    xx['aa']=aa
-    xx['aa']=aa
-    xx['aa']=aa
-    print(json.dumps(xx))
+    aa['a'] = 'aa'
+    aa['a'] = 'aaa'
+    xx['aa'] = aa
+    xx['aa'] = aa
+    xx['aa'] = aa
+    print(fix_price("1112.01"))
 # print(url_parse('https://food.grab.com/sg/en/restaurant/mcdonald-s-jurong-green-cc-delivery/SGDD04996'))
 # print(url_parse('https://food.grab.com/my/en/restaurant/hominsan-pavilion-non-halal-delivery/MYDD12622'))
 # print(url_parse('https://food.grab.com/ph/en/restaurant/s-r-new-york-style-pizza-newport-delivery/PHGFSTI000000wz'))
