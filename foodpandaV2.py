@@ -561,7 +561,7 @@ def process_excel(item, conn):
          '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in English. Max 64 characters. Only required if you have input a description under productList']]
 
     product_list_sql = """SELECT pos_product_id,product_type,name,REPLACE(category,',','|') 
-            as category,REPLACE(sub_product_ids,',','|') as sub_product_ids,description,price,min,max,images,block_list
+            as category,sub_product_ids,description,price,min,max,images,block_list
             FROM product_list_merge WHERE batch_no=?;"""
     cur = conn.cursor()
     try:
@@ -574,8 +574,12 @@ def process_excel(item, conn):
         cur.close()
 
     for dd in all_data_product:
+        sub_product_ids = dd[4]
+        sub_id_list = sub_product_ids.split(',')
+        sub_product_ids = "|".join(set(sub_id_list))
+
         all_excel_data_product.append(
-            ['', dd[0], dd[1], dd[2], urllib.parse.unquote_plus(dd[3]), dd[4], dd[5], dd[6], dd[7], dd[8], dd[9], ''])
+            ['', dd[0], dd[1], dd[2], urllib.parse.unquote_plus(dd[3]), sub_product_ids, dd[5], dd[6], dd[7], dd[8], dd[9], ''])
 
     for cc in total_category_list:
         all_excel_data_category.append(

@@ -588,7 +588,7 @@ def process_excel(item, conn):
          '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in English. Max 64 characters. Only required if you have input a description under productList']]
 
     product_list_sql = """SELECT pos_product_id,product_type,name,REPLACE(category,',','|') 
-        as category,sub_product_ids as sub_product_ids,description,price,min,max,images,block_list
+        as category,sub_product_ids,description,price,min,max,images,block_list
         FROM product_list_merge WHERE batch_no=?;"""
     cur = conn.cursor()
     try:
