@@ -184,10 +184,11 @@ def fetch_data(page_url, variables):
 
 def compose_images(item):
     image_list = []
-    all_dir_path = init_path('food_panda', item.store_name, "ALL")
+    store_name = fixStr(item.store_name)
+    all_dir_path = init_path('food_panda', store_name, "ALL")
     for ca in item.menus:
         category_name = f"{fixStr(ca['name'])}"
-        category_dir_path = init_path('food_panda', item.store_name, category_name)
+        category_dir_path = init_path('food_panda', store_name, category_name)
         product_list = ca['products']
         for pd in product_list:
             if pd['file_path']:
@@ -224,7 +225,7 @@ def process_category(item):
     for category in item.menus:
         if not category['products']:
             continue
-        category_name = f"{fixStr(category['name'])}"
+        category_name = category['name']
         category_name_set.add(category_name)
     for category_name in category_name_set:
         category_data = {
@@ -286,7 +287,7 @@ def save_to_merge_db(list, conn):
 def process_product(item):
     total_product_map = []
     for category in item.menus:
-        category_name = f"{fixStr(category['name'])}"
+        category_name = category['name']
         source_product_list = category.get('products')
         if source_product_list is None:
             continue
@@ -296,7 +297,7 @@ def process_product(item):
                 timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 product_id = f'SI{p_idx}{timestamp}'
                 product['id'] = product_id
-            product_name = fixStr(product.get('name'))
+            product_name = product.get('name')
             product_description = product.get('description')
             product_variations = product.get('product_variations')[0]
             product_price = fix_price(str(product_variations.get('price')))
@@ -579,7 +580,8 @@ def process_excel(item, conn):
         sub_product_ids = "|".join(set(sub_id_list))
 
         all_excel_data_product.append(
-            ['', dd[0], dd[1], dd[2], urllib.parse.unquote_plus(dd[3]), sub_product_ids, dd[5], dd[6], dd[7], dd[8], dd[9], ''])
+            ['', dd[0], dd[1], dd[2], urllib.parse.unquote_plus(dd[3]), sub_product_ids, dd[5], dd[6], dd[7], dd[8],
+             dd[9], ''])
 
     for cc in total_category_list:
         all_excel_data_category.append(

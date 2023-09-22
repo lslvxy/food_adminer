@@ -183,10 +183,11 @@ def fetch_data(page_url, variables):
 
 def compose_images(item):
     image_list = []
-    all_dir_path = init_path('food_grab', item.store_name, "ALL")
+    store_name = fixStr(item.store_name)
+    all_dir_path = init_path('food_grab', store_name, "ALL")
     for ca in item.menus:
         category_name = f"{fixStr(ca['name'])}"
-        category_dir_path = init_path('food_grab', item.store_name, category_name)
+        category_dir_path = init_path('food_grab', store_name, category_name)
         product_list = ca['items']
         for pd in product_list:
             if pd['imgHref']:
@@ -223,7 +224,7 @@ def process_category(item):
     for category in item.menus:
         if not category['available']:
             continue
-        category_name = f"{fixStr(category['name'])}"
+        category_name = category['name']
         category_name_set.add(category_name)
     for category_name in category_name_set:
         category_data = {
@@ -285,7 +286,7 @@ def save_to_merge_db(list, conn):
 def process_product(item):
     total_product_map = []
     for category in item.menus:
-        category_name = f"{fixStr(category['name'])}"
+        category_name =category['name']
         source_product_list = category.get('items')
         if source_product_list is None:
             continue
@@ -295,7 +296,7 @@ def process_product(item):
                 timestamp = datetime.timestamp(datetime.now())
                 product_id = f'SI{p_idx}{timestamp}'
                 product['ID'] = product_id
-            product_name = fixStr(product.get('name'))
+            product_name = product.get('name')
 
             product_description = product.get('description')
             product_price = fix_price(str(product.get('priceV2').get('amountDisplay')))
