@@ -97,6 +97,9 @@ def clean_data(item):
 
 def prepare_data(item):
     homedir = str(pathlib.Path.home())
+    dir_path = os.path.join(homedir, "Aim_menu")
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
     db_path = os.path.join(homedir, "Aim_menu", ".data.db")
     item.db_path = db_path
     if not os.path.exists(db_path):
@@ -588,15 +591,15 @@ def process_excel(item, conn):
             [cc.get('category_id'), cc.get('category_name'), cc.get('category_description'),
              cc.get('category_image')])
 
-    columns_sheet_category = ["categoryID", "categoryName", "categoryDescription",
-                              "categoryimage"]
+    columns_sheet_category = ["categoryId", "categoryName", "categoryDescription",
+                              "categoryImage"]
 
     columns_sheet_product = ["productId", "posProductId", "productType", "name",
                              "category", "subPosProductIds", "description",
                              "price", "min", "max", "images",
                              "blockList"]
 
-    columns_sheet_lang = ["ProductId", "posProductId", "name", "description"]
+    columns_sheet_lang = ["productId", "posProductId", "name", "description"]
 
     xlsx_path = os.path.join(homedir, "Aim_menu", "food_panda",
                              f"{item.store_name}_{item.language}_V2.xlsx")
