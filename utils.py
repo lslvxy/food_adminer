@@ -81,7 +81,7 @@ def toExcel(title_list, data_list, file_path):
     df.index = range(1, len(df) + 1)
     if os.path.exists(file_path):
         os.remove(file_path)
-    print("Write file to " + file_path)
+    # print("Write file to " + file_path)
     df.to_excel(file_path, index=False)
 
 
