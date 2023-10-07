@@ -94,23 +94,40 @@ def init_path(spider_type, store_name, category_name):
 
 
 def fix_price(price: str) -> str:
+    if price.endswith('.000'):
+        return price.replace('.000', '000')
+    # trimmer = re.compile(r'[^\d.,]+')
+    # trimmed = trimmer.sub('', price)
+    # decimal_separator = trimmed[-4:][0]
+    # if decimal_separator not in [".", ","]:
+    #     return price
+    # match = re.search(r'(\d{1,3}(?:,\.\d{3})+)(?:,\.\d+)?(?!\d)?', price)
+    # if match:
+    #     tmp=match.group(1)
+    #     print(f"match is {tmp}")
+    #     fot = tmp.replace(',', '')
+    #     fot = tmp.replace(',', '')
+    #     return fot
+
     # clean the price string
-    trimmer = re.compile(r'[^\d.,]+')
-    trimmed = trimmer.sub('', price)
+    # trimmer = re.compile(r'[^\d.,]+')
+    # trimmed = trimmer.sub('', price)
+    #
+    # # figure out the separator which will always be "," or "." and at position -3 if it exists
+    # decimal_separator = trimmed[-4:][0]
+    # if decimal_separator not in [".", ","]:
+    #     decimal_separator = None
+    #
+    # if decimal_separator:
+    #     # re-clean now that we know which separator is the correct one
+    #     trimer = re.compile(rf'[^\d{decimal_separator}]+')
+    #     trimmed = trimer.sub('', price)
 
-    # figure out the separator which will always be "," or "." and at position -3 if it exists
-    decimal_separator = trimmed[-3:][0]
-    if decimal_separator not in [".", ","]:
-        decimal_separator = None
+    # if decimal_separator == ",":
+    #     trimmed = trimmed.replace(",", ".")
 
-    # re-clean now that we know which separator is the correct one
-    trimer = re.compile(rf'[^\d{decimal_separator}]+')
-    trimmed = trimer.sub('', price)
+    return price
 
-    if decimal_separator == ",":
-        trimmed = trimmed.replace(",", ".")
-
-    return trimmed
 
 if __name__ == '__main__':
     xx = {}
@@ -120,6 +137,11 @@ if __name__ == '__main__':
     xx['aa'] = aa
     xx['aa'] = aa
     xx['aa'] = aa
+    print(fix_price("11.8"))
+    print(fix_price("11.80"))
+    print(fix_price("11.800"))
+    print(fix_price("11,800.00"))
+    print(fix_price("11,800.000"))
     print(urllib.parse.quote_plus("Papaya salad, larbchili paste"))
     print(urllib.parse.unquote_plus("Papaya+salad%2C+larbchili+paste|Papaya+salad%2C+larbchili+paste"))
 # print(url_parse('https://food.grab.com/sg/en/restaurant/mcdonald-s-jurong-green-cc-delivery/SGDD04996'))
