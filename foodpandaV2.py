@@ -385,7 +385,10 @@ def process_item(item):
             modifier_id = str(modifier_item.get('id'))
             modifier_name = modifier_item.get('name')
 
-            item_price = fix_price(str(modifier_item.get('price')))
+            tmp_price=str(modifier_item.get('price_before_discount',''))
+            if not  tmp_price:  
+                tmp_price=str(modifier_item.get('price'))
+            item_price = fix_price(tmp_price)
             result_item = {'id': '',
                            'product_id': modifier_id,
                            'product_type': 'MODIFIER',
