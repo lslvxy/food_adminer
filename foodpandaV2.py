@@ -201,7 +201,7 @@ def compose_images(item):
         product_list = ca['products']
         for pd in product_list:
             if pd['file_path']:
-                file_name = fixStr(pd['name'])
+                file_name = str(pd['id'])
                 image_list.append({
                     'category': category_name,
                     'all_dir_path': all_dir_path,
@@ -318,7 +318,7 @@ def process_product(item):
             product_variations = product.get('product_variations')[0]
             product_price = fix_price(str(product_variations.get('price')))
             if product['file_path']:
-                product_image = fixStr(product['name']) + '.jpg'
+                product_image = str(product['id']) + '.jpg'
             else:
                 product_image = ''
             product_data = {'id': '',
