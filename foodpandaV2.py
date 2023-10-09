@@ -342,7 +342,7 @@ def process_product(item):
                         topping = item.toppings.get(str(topping_id))
                         modifier_groups.append(topping)
             elif len(product_variations_list) > 1:  # 套餐 modifier-group-modifier
-                variation = {'id': '55555555', 'name': '變化' if item.language == 'zh' else 'Variation',
+                variation = {'id': datetime.now().strftime("%Y%m%d%H%M%S"), 'name': '變化' if item.language == 'zh' else 'Variation',
                              'quantity_minimum': '1', 'quantity_maximum': '1'}
                 v_options = []
                 for pv in product_variations_list:
