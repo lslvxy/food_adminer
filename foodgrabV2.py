@@ -553,43 +553,43 @@ def process_excel(item, conn):
     total_category_list = item.total_category_list
 
     all_excel_data_product = [
-        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
-         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.',
-         'Indicate where this is an SINGLE, MODIFIER or GROUP. Single refers to the main item. Group refers to Modifier group.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP. Max 32 characters.',
+        ['This row contain the description and instruction of each fields.',
+         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP.',
+         'Indicate where this is an SINGLE, MODIFIER or GROUP. Single refers to the main item. Modifier refers to an option under an item. Group refers to Modifer group.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP. Max 80 characters. ',
          '(REQUIRED) The name of the category for the item. The name need to correspond with the category in \'categoryList\' or an existing category in backoffice.',
-         '(OPTIONAL) The PosProductIDs of the item modifiers that should be a subset. Use | to separate multiple IDs.',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP. Max 64 characters',
-         '(REQUIRED) The price of the Item or Modifier. Leave blank for GROUP.',
-         '(REQUIRED) The minimum number of options to select for GROUP. Leave blank for SINGLE and MODIFIER.',
+         '(OPTIONAL) The PosProductIDs of the Group or Modifier that should be a subset. Group is subset of Single. Modifier is subset of Group. Use | as to separate multiple IDs. ',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP. Max 300 characters',
+         '(REQUIRED) The price of the Single or Modifier. Leave blank for GROUP. ',
+         '(REQUIRED) The mininum number of options to select for GROUP. Leave blank for SINGLE and MODIFIER.',
          '(REQUIRED) The maximum number of options to select for GROUP. Leave blank for SINGLE and MODIFIER.',
-         '(OPTIONAL) The file name of the image for this SINGLE or MODIFIER. Ensure it correspond with the actual image file.',
+         '(OPTIONAL) The file name of the image for this SINGLE or MODIFIER. Ensure it correspond with the actual image file. ',
          '(OPTIONAL) The posProductID of the MODIFIER to be excluded from an item. Use | to separate multiple IDs.']]
     all_excel_data_category = [
-        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
-         '(REQUIRED) Fill in the new categories to create. The name need to correspond with the \'category\' under productList. Only for new categories. Max 32 characters.',
-         '(OPTIONAL) The description of category. Max 64 characters.',
-         '(OPTIONAL) The file name of the image for this SINGLE or MODIFIER. Ensure it correspond with the actual image file.']]
+        ['This row contain the description and instruction of each fields.',
+         '(REQUIRED) Fill in the new categories to create. The name need to correspond with the \'category\' under productList. Only for new categories. Max 80 characters.',
+         '(OPTIONAL) The description of category. Max 300 characters.',
+         '(OPTIONAL) The file name of the image for this CATEGORY. Ensure it correspond with the actual image file. ']]
     all_excel_data_lang_zh = [
-        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
-         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.The ID needs to correspond with the \'posProductId\' under productList.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Chinese. Max 32 characters.',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Chinese. Max 64 characters. Only required if you have input a description under productList']]
+        ['This row contain the description and instruction of each fields.',
+         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP. The ID needs to correspond with the \'posProductId\' under productList.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Chinese. Max 80 characters. ',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Chinese. Max 300 characters. Only required if you have input a description under productList.']]
     all_excel_data_lang_th = [
-        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
-         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.The ID needs to correspond with the \'posProductId\' under productList.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Thai. Max 32 characters.',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Thai. Max 64 characters. Only required if you have input a description under productList']]
+        ['This row contain the description and instruction of each fields.',
+         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP. The ID needs to correspond with the \'posProductId\' under productList.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Thai. Max 80 characters. ',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Thai. Max 300 characters. Only required if you have input a description under productList.']]
     all_excel_data_lang_ms = [
-        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
-         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.The ID needs to correspond with the \'posProductId\' under productList.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Malay. Max 32 characters.',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Malay. Max 64 characters. Only required if you have input a description under productList']]
+        ['This row contain the description and instruction of each fields.',
+         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP. The ID needs to correspond with the \'posProductId\' under productList.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Malay. Max 80 characters. ',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Malay. Max 300 characters. Only required if you have input a description under productList.']]
     all_excel_data_lang_en = [
-        ['This row contain the description and instruction of each fields,To import data, please start on line 3',
-         '(REQUIRED) This is your unique product ID of SINGLE or MODIFIER.The ID needs to correspond with the \'posProductId\' under productList.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in English. Max 32 characters.',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in English. Max 64 characters. Only required if you have input a description under productList']]
+        ['This row contain the description and instruction of each fields.',
+         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP. The ID needs to correspond with the \'posProductId\' under productList.',
+         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in English. Max 80 characters. ',
+         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in English. Max 300 characters. Only required if you have input a description under productList.']]
 
     product_list_sql = """SELECT pos_product_id,product_type,name,REPLACE(category,',','|') 
         as category,sub_product_ids,description,price,min,max,images,block_list
