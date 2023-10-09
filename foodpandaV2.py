@@ -36,6 +36,9 @@ class FoodPandaItem:
     total_group_map = {}
     total_modifier_map = {}
     fina_data = []
+    tree = False
+    total_sub_group = []
+    total_sub_item = []
 
 
 def parse_foodpandaV2(page_url, variables):
@@ -77,6 +80,9 @@ def parse_foodpandaV2(page_url, variables):
     process_product(item)
     process_group(item)
     process_item(item)
+    if item.tree:
+        # process_sub_group(item)
+        process_sub_item(item)
 
     conn = sqlite3.connect(item.db_path)
     save_to_db(item, conn)
@@ -245,8 +251,10 @@ def save_to_db(item, conn):
     total_product_map = item.total_product_map
     total_group_map = item.total_group_map
     total_modifier_map = item.total_modifier_map
+    total_sub_group = item.total_sub_group
+    total_sub_item = item.total_sub_item
     # all_data_product = dict(**dict(**total_product_map, **total_group_map), **total_modifier_map)
-    all_data_product = total_product_map + total_group_map + total_modifier_map
+    all_data_product = total_product_map + total_group_map + total_modifier_map + total_sub_group + total_sub_item
     product_data_sql_list = []
     for dd in all_data_product:
         product_data_sql = (
@@ -349,6 +357,70 @@ def process_product(item):
     item.total_product_map = total_product_map
 
 
+def process_sub_group(item):
+    total_sub_group = item.total_sub_group
+    sub_group_map = []
+    for g_idx, modifier_group in enumerate(total_sub_group):
+        group_id = str(modifier_group.get('id'))
+        group_name = modifier_group.get('name')
+        group_data = {'id': '',
+                      'product_id': group_id,
+                      'product_type': 'GROUP',
+                      'product_name': group_name,
+                      'category_name': '',
+                      'sub_product_ids': '',
+                      'product_description': '',
+                      'product_price': '',
+                      'selection_range_min': modifier_group.get('quantity_minimum'),
+                      'selection_range_max': modifier_group.get('quantity_maximum'),
+                      'product_image': '',
+                      'blockList': ''
+                      }
+        modifiers = modifier_group.get('options')
+        if modifiers:
+            group_data['modifiers'] = modifiers
+            all_sub_modifiers_id = set()
+            for modifier in modifiers:
+                all_sub_modifiers_id.add(str(modifier.get('id')))
+            group_data['sub_product_ids'] = all_sub_modifiers_id
+
+        sub_group_map.append(group_data)
+    pass
+
+
+def process_sub_item(item):
+    total_group_map = item.total_sub_group
+    sub_modifier_map = []
+    for group_data in total_group_map:
+        modifier_items = group_data.get('modifiers')
+        if not modifier_items:
+            continue
+        for m_idx, modifier_item in enumerate(modifier_items):
+            modifier_id = str(modifier_item.get('id'))
+            modifier_name = modifier_item.get('name')
+
+            tmp_price = str(modifier_item.get('price_before_discount', ''))
+            if not tmp_price:
+                tmp_price = str(modifier_item.get('price'))
+            item_price = fix_price(tmp_price)
+            result_item = {'id': '',
+                           'product_id': modifier_id,
+                           'product_type': 'MODIFIER',
+                           'product_name': modifier_name,
+                           'category_name': '',
+                           'sub_product_ids': '',
+                           'product_description': '',
+                           'product_price': item_price,
+                           'selection_range_min': '',
+                           'selection_range_max': '',
+                           'product_image': '',
+                           'blockList': ''
+                           }
+            sub_modifier_map.append(result_item)
+    item.total_sub_item = sub_modifier_map
+    pass
+
+
 def process_group(item):
     total_product_map = item.total_product_map
     total_group_map = []
@@ -412,7 +484,40 @@ def process_item(item):
                            'product_image': '',
                            'blockList': ''
                            }
+            if modifier_item.get('topping_ids'):  # single->modifier 包含 group
+                topping_ids = modifier_item.get('topping_ids')
+                for topping_id in topping_ids:
+                    topping = item.toppings.get(str(topping_id))
+                    group_id = str(topping.get('id'))
+                    group_name = topping.get('name')
+                    group_data = {'id': '',
+                                  'product_id': group_id,
+                                  'product_type': 'GROUP',
+                                  'product_name': group_name,
+                                  'category_name': '',
+                                  'sub_product_ids': '',
+                                  'product_description': '',
+                                  'product_price': '',
+                                  'selection_range_min': topping.get('quantity_minimum'),
+                                  'selection_range_max': topping.get('quantity_maximum'),
+                                  'product_image': '',
+                                  'blockList': ''
+                                  }
+                    modifiers = topping.get('options')
+                    if modifiers:
+                        group_data['modifiers'] = modifiers
+                        all_sub_modifiers_id = set()
+                        for modifier in modifiers:
+                            all_sub_modifiers_id.add(str(modifier.get('id')))
+                        group_data['sub_product_ids'] = all_sub_modifiers_id
+
+                    item.total_sub_group.append(group_data)
+                all_sub_modifiers_id = set()
+                for m_id in topping_ids:
+                    all_sub_modifiers_id.add(str(m_id))
+                result_item['sub_product_ids'] = all_sub_modifiers_id
             total_modifier_map.append(result_item)
+            item.tree = True
 
     item.total_modifier_map = total_modifier_map
 
