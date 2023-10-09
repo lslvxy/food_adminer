@@ -302,6 +302,7 @@ def process_product(item):
                 product['id'] = product_id
             product_name = product.get('name')
             product_description = product.get('description')
+            product_variations_list = product.get('product_variations')
             product_variations = product.get('product_variations')[0]
             product_price = fix_price(str(product_variations.get('price')))
             if product['file_path']:
@@ -321,12 +322,21 @@ def process_product(item):
                             'product_image': product_image,
                             'blockList': ''
                             }
-            topping_ids = product_variations.get('topping_ids')
             modifier_groups = []
-            if topping_ids:
-                for topping_id in topping_ids:
-                    topping = item.toppings.get(str(topping_id))
-                    modifier_groups.append(topping)
+            if len(product_variations_list) == 1:  # 只有 group-modifier
+                topping_ids = product_variations.get('topping_ids')
+                if topping_ids:
+                    for topping_id in topping_ids:
+                        topping = item.toppings.get(str(topping_id))
+                        modifier_groups.append(topping)
+            elif len(product_variations_list) > 1:  # 套餐 modifier-group-modifier
+                variation = {'id': '55555555', 'name': '變化' if item.language == 'zh' else 'Variation',
+                             'quantity_minimum': '1', 'quantity_maximum': '1'}
+                v_options = []
+                for pv in product_variations_list:
+                    v_options.append(pv)
+                variation['options'] = v_options
+                modifier_groups.append(variation)
 
             if modifier_groups:
                 product_data['modifier_groups'] = modifier_groups
@@ -385,9 +395,9 @@ def process_item(item):
             modifier_id = str(modifier_item.get('id'))
             modifier_name = modifier_item.get('name')
 
-            tmp_price=str(modifier_item.get('price_before_discount',''))
-            if not  tmp_price:  
-                tmp_price=str(modifier_item.get('price'))
+            tmp_price = str(modifier_item.get('price_before_discount', ''))
+            if not tmp_price:
+                tmp_price = str(modifier_item.get('price'))
             item_price = fix_price(tmp_price)
             result_item = {'id': '',
                            'product_id': modifier_id,
