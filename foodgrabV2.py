@@ -213,12 +213,23 @@ def save_images(item):
         file_name = img['file_name']
         image_path = os.path.join(img['category_dir_path'], file_name)
         image_path2 = os.path.join(img['all_dir_path'], file_name)
-        blob = r.content
-        with open(image_path, 'wb') as f:
-            f.write(blob)
-        with open(image_path2, 'wb') as f:
-            f.write(blob)
-        print("Download image: " + image_path)
+        retry = 3
+        for r in range(retry):
+            try:
+                r = requests.get(img['url'], timeout=180)
+                blob = r.content
+                with open(image_path, 'wb') as f:
+                    f.write(blob)
+                with open(image_path2, 'wb') as f:
+                    f.write(blob)
+            except Exception as e:
+                if r < 2:
+                    logging.error(f'Failed. Attempt # {r + 1}')
+                else:
+                    print('Error downloading image at third attempt')
+            else:
+                print("Download image: " + image_path)
+                break
 
 
 def process_category(item):

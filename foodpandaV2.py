@@ -216,16 +216,26 @@ def save_images(item):
     for img in item.image_list:
         if not img['url']:
             continue
-        r = requests.get(img['url'], timeout=180)
         file_name = img['file_name']
         image_path = os.path.join(img['category_dir_path'], file_name)
         image_path2 = os.path.join(img['all_dir_path'], file_name)
-        blob = r.content
-        with open(image_path, 'wb') as f:
-            f.write(blob)
-        with open(image_path2, 'wb') as f:
-            f.write(blob)
-        print("Download image: " + image_path)
+        retry = 3
+        for r in range(retry):
+            try:
+                r = requests.get(img['url'], timeout=180)
+                blob = r.content
+                with open(image_path, 'wb') as f:
+                    f.write(blob)
+                with open(image_path2, 'wb') as f:
+                    f.write(blob)
+            except Exception as e:
+                if r < 2:
+                    logging.error(f'Failed. Attempt # {r + 1}')
+                else:
+                    print('Error downloading image at third attempt')
+            else:
+                print("Download image: " + image_path)
+                break
 
 
 def process_category(item):
@@ -342,7 +352,8 @@ def process_product(item):
                         topping = item.toppings.get(str(topping_id))
                         modifier_groups.append(topping)
             elif len(product_variations_list) > 1:  # 套餐 modifier-group-modifier
-                variation = {'id': datetime.now().strftime("%Y%m%d%H%M%S"), 'name': '變化' if item.language == 'zh' else 'Variation',
+                variation = {'id': datetime.now().strftime("%Y%m%d%H%M%S"),
+                             'name': '變化' if item.language == 'zh' else 'Variation',
                              'quantity_minimum': '1', 'quantity_maximum': '1'}
                 v_options = []
                 for pv in product_variations_list:
@@ -559,10 +570,10 @@ def update_sub_ids(product_type, ids_str, conn, batch_no):
             if _idx == 0:
                 continue
             update_sub_ids_sql = """UPDATE product_list_merge SET 
-            sub_product_ids=REPLACE(sub_product_ids,?,?) WHERE  batch_no=? and product_type=? and sub_product_ids LIKE ?;"""
+            sub_product_ids=REPLACE(sub_product_ids,?,?) WHERE  batch_no=? and sub_product_ids LIKE ?;"""
             cur = conn.cursor()
 
-            cur.execute(update_sub_ids_sql, (_id, merge_id, batch_no, product_type, f'%{_id}%'))
+            cur.execute(update_sub_ids_sql, (_id, merge_id, batch_no, f'%{_id}%'))
             # conn.set_trace_callback(logging.info)
         conn.commit()
     except Exception as e:
@@ -619,10 +630,11 @@ def process_final_list(item, conn):
         cur.close()
     save_to_merge_db(fixed_group_list, conn)
     # modifier
-    modifier_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,batch_no, biz_type,pos_product_id,product_type,name,  
+    modifier_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,
+        group_concat(DISTINCT sub_product_ids) as sub_product_ids_merge,batch_no, biz_type,pos_product_id,product_type,name,  
         category,sub_product_ids,description,price,min,max,images 
         FROM product_list WHERE batch_no=? and product_type='MODIFIER' GROUP BY name,price;"""
-
+    modifier_list=[]
     cur = conn.cursor()
     try:
         cur.execute(modifier_list_sql, (item.batchNo,))
@@ -633,14 +645,21 @@ def process_final_list(item, conn):
             id_list = pos_product_ids.split(',', 1)
             if len(id_list) == 2:
                 update_sub_ids('GROUP', pos_product_ids, conn, item.batchNo)
+
             fixed_modifier_list.append(
-                (gg[1], gg[2], gg[3], gg[4], gg[5], gg[6], gg[7], gg[8], gg[9], gg[10], gg[11], gg[12]))
+                (gg[2], gg[3], gg[4], gg[5], gg[6], gg[7], gg[8], gg[9], gg[10], gg[11], gg[12],gg[13] ))
     except Exception as e:
         logging.error(str(e))
         return False
     finally:
         cur.close()
     save_to_merge_db(fixed_modifier_list, conn)
+
+    for gg in modifier_list:
+        sub_product_ids = gg[1]
+        sub_id_list = sub_product_ids.split(',', 1)
+        if len(sub_id_list) == 2:
+            update_sub_ids('GROUP', sub_product_ids, conn, item.batchNo)
 
 
 def process_excel(item, conn):
@@ -787,9 +806,10 @@ def parse_foodpandaV1(item, variables):
                 print("product ：{name}，no information".format(name=product.get('name')))
                 continue
             if len(product_variations) == 1:
-                logging.info("only one product ：{name}，no information".format(name=product.get('name')))
+                pass
+                # logging.info("only one product ：{name}，no information".format(name=product.get('name')))
             elif len(product_variations) > 1:
-                logging.info("multiple products ：{name}".format(name=product.get('name')))
+                # logging.info("multiple products ：{name}".format(name=product.get('name')))
                 for pv in product_variations:
                     total_package_type = pv.get('name', '')
                     total_package_price = pv.get('price')
