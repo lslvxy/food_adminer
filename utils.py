@@ -101,7 +101,7 @@ def fix_price(price: str) -> str:
     decimal_separator = trimmed[-4:][0]
     if decimal_separator in [".", ","]:
         return trimmed.replace(decimal_separator, '')
-    return trimmed
+    return trimmed.replace(',', '')
 
 
 if __name__ == '__main__':
@@ -114,8 +114,8 @@ if __name__ == '__main__':
     xx['aa'] = aa
     print(fix_price("11.8"))
     print(fix_price("11.80"))
-    print(fix_price("11.800"))
-    print(fix_price("11.800.00"))
+    print(fix_price("11,800"))
+    print(fix_price("11,800.00"))
     print(fix_price("11.800.000"))
     print(urllib.parse.quote_plus("Papaya salad, larbchili paste"))
     print(urllib.parse.unquote_plus("Papaya+salad%2C+larbchili+paste|Papaya+salad%2C+larbchili+paste"))
