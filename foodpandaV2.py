@@ -9,7 +9,7 @@ import requests
 import pandas as pd
 from datetime import datetime
 
-from utils import isEn, init_path, fixStr, fix_price
+from utils import isEn, init_path, fixStr, fix_price, parse
 from utils import isCn
 from utils import isTh
 import pathlib
@@ -23,6 +23,7 @@ bc = logging.basicConfig(level=logging.INFO, format='%(asctime)s  - %(message)s'
 
 class FoodPandaItem:
     biz_type = 'food_panda'
+    batchNo = ''
     id = ''
     language = ''
     chain_code = ''
@@ -52,55 +53,66 @@ class FoodPandaItem:
     total_sub_group = []
     total_sub_item = []
     chain = {}
+    store_data = {}
 
 
-global_batch_no = ''
+class Config:
+    db_path: ''
+    batchNo = ''
 
 
 def parse_foodpandaV2(variables):
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
     batch_no = f'{timestamp}'
-    global_batch_no = batch_no
     print(f'run batch no:{batch_no}')
     logging.info(f'run batch no:{batch_no}')
     url_list = variables['url_list']
+    global_config = Config()
+    global_config.batchNo = batch_no
+    prepare_data(global_config)
+    conn = sqlite3.connect(global_config.db_path)
     for p_idx, page_url in enumerate(url_list):
+        variables['run_index'] = p_idx
+        variables['total_count'] = len(url_list)
         print(f'processing: {p_idx + 1}/{len(url_list)}')
-    root_data = fetch_data(variables)
-    store_data = root_data.get('data', None)
+        root_data = fetch_data(page_url, variables)
+        store_data = root_data.get('data', None)
 
-    if store_data is None:
-        print("Failure to parse menu data")
-        return
-    item = FoodPandaItem()
-    item.run_index = variables['run_index']
-    item.total_count = variables['total_count']
-    item.batchNo = batch_no
-    item.store_id = store_data.get('id')
-    item.store_name = store_data.get('name')
-    item.store_code = store_data.get('code')
-    item.store_url = store_data.get('web_path')
-    item.store_address = store_data.get('address')
+        if store_data is None:
+            continue
+        item = FoodPandaItem()
+        item.run_index = variables['run_index']
+        item.total_count = variables['total_count']
+        item.batchNo = batch_no
+        item.store_data = store_data
+        item.store_id = store_data.get('id')
+        item.store_name = store_data.get('name')
+        item.store_code = store_data.get('code')
+        item.store_url = store_data.get('web_path')
+        item.store_address = store_data.get('address')
 
-    item.chain_id = store_data.get('chain')['id']
-    item.chain_name = store_data.get('chain')['name']
-    item.chain_code = store_data.get('chain')['code']
-    item.longitude = store_data.get('longitude')
-    item.latitude = store_data.get('latitude')
-    item.country = store_data.get('chain')
-    item.city = store_data.get('city')['name']
-    item.location = store_data.get('location')
-    item.customer_phone = store_data.get('customer_phone')
+        item.chain_id = store_data.get('chain')['id']
+        item.chain_name = store_data.get('chain')['name']
+        item.chain_code = store_data.get('chain')['code']
+        item.longitude = store_data.get('longitude')
+        item.latitude = store_data.get('latitude')
+        item.country = store_data.get('chain')
+        item.city = store_data.get('city')['name']
+        item.location = store_data.get('location')
+        item.customer_phone = store_data.get('customer_phone')
 
-    item.photoHref = store_data.get('photoHref')
-    item.chain = store_data.get('chain')
+        item.photoHref = store_data.get('photoHref')
+        item.chain = store_data.get('chain')
 
-    item.language = variables['language']
-    item.country = variables['country']
+        item.language = variables['language']
+        item.country = variables['country']
 
+        process_store(item)
+        save_to_db(item, conn)
+        time.sleep(int(variables['interval']))
+        del item
+        del root_data
     # clean_data(item)
-    prepare_data(item)
-    process_store(item)
     # compose_images(item)
     # if not '?img=no' in page_url:
     #     save_images(item)
@@ -112,14 +124,13 @@ def parse_foodpandaV2(variables):
     # process_sub_group(item)
     # process_sub_item(item)
 
-    conn = sqlite3.connect(item.db_path)
-    save_to_db(item, conn)
     # process_final_list(item, conn)
-    process_excel(item, conn)
+    process_excel(global_config, conn)
 
     return True
 
-    # def clean_data(item):
+
+def clean_data(item):
     homedir = str(pathlib.Path.home())
     store_path = os.path.join(homedir, "Aim_menu", item.biz_type, f"{fixStr(item.store_name.strip())}")
     if os.path.exists(store_path):
@@ -142,38 +153,90 @@ def prepare_data(item):
 
     cur = conn.cursor()
     try:
-        sql = """CREATE TABLE "product_list" (
+        sql = """CREATE TABLE "store_list" (
                   "batch_no" varchar(64) NOT NULL,
-                  "biz_type" varchar(16) NOT NULL,
-                  "pos_product_id" varchar(64) NOT NULL,
-                  "product_type" varchat(32) NOT NULL,
-                  "name" varchar(255),
-                  "category" varchar(255),
-                  "sub_product_ids" text(2048),
-                  "description" varchar(255),
-                  "price" varchar(32),
-                  "min" varchar(32),
-                  "max" varchar(32),
-                  "images" varchar(255),
-                  "block_list" varchar(255)
+                  "biz_type" varchar(64) NOT NULL,
+                  "web_path" varchar(2048),
+                  "ID" varchar(255),
+                  "code" varchar(255),
+                  "accepts_instructions" varchar(255),
+                  "address" varchar(2048),
+                  "address_line2" varchar(2048),
+                  "budget" varchar(255),
+                  "chain_id" varchar(255),
+                  "chain_main_vendor_id" varchar(255),
+                  "chain_name" varchar(255),
+                  "chain_code" varchar(255),
+                  "city_id" varchar(255),
+                  "city_name" varchar(255),
+                  "cuisines_id" varchar(255),
+                  "cuisines_name" varchar(2048),
+                  "cuisines_main" varchar(255),
+                  "primary_cuisine_id" varchar(255),
+                  "primary_cuisine_name" varchar(255),
+                  "primary_cuisine_main" varchar(255),
+                  "food_characteristics_id" varchar(255),
+                  "food_characteristics_name" varchar(255),
+                  "food_characteristics_is_halal" varchar(255),
+                  "food_characteristics_is_vegetarian" varchar(255),
+                  "customer_phone" varchar(255),
+                  "hero_image" varchar(2048),
+                  "hero_listing_image" varchar(2048),
+                  "description" varchar(2048),
+                  "is_active" varchar(255),
+                  "is_checkout_comment_enabled" varchar(255),
+                  "is_new_until" varchar(255),
+                  "is_delivery_enabled" varchar(255),
+                  "is_pickup_enabled" varchar(255),
+                  "is_preorder_enabled" varchar(255),
+                  "is_service_fee_enabled" varchar(255),
+                  "is_service_tax_enabled" varchar(255),
+                  "is_service_tax_visible" varchar(255),
+                  "is_vat_disabled" varchar(255),
+                  "is_vat_included_in_product_price" varchar(255),
+                  "is_vat_visible" varchar(255),
+                  "is_vat_included" varchar(255),
+                  "latitude" varchar(255),
+                  "location" varchar(255),
+                  "logo" varchar(2048),
+                  "longitude" varchar(255),
+                  "food_license_number" varchar(255),
+                  "timezone" varchar(255),
+                  "minimum_order_amount" varchar(255),
+                  "minimum_pickup_time" varchar(255),
+                  "multiple_toppings" varchar(255),
+                  "name" varchar(2048),
+                  "post_code" varchar(255),
+                  "rating" varchar(255),
+                  "review_number" varchar(255),
+                  "weekday_1_opening" varchar(255),
+                  "weekday_1_closing" varchar(255),
+                  "weekday_2_opening" varchar(255),
+                  "weekday_2_closing" varchar(255),
+                  "weekday_3_opening" varchar(255),
+                  "weekday_3_closing" varchar(255),
+                  "weekday_4_opening" varchar(255),
+                  "weekday_4_closing" varchar(255),
+                  "weekday_5_opening" varchar(255),
+                  "weekday_5_closing" varchar(255),
+                  "weekday_6_opening" varchar(255),
+                  "weekday_6_closing" varchar(255),
+                  "weekday_7_opening" varchar(255),
+                  "weekday_7_closing" varchar(255),
+                  "service_fee" varchar(255),
+                  "service_fee_percentage_amount" varchar(255),
+                  "service_tax_percentage_amount" varchar(255),
+                  "short_name" varchar(2048),
+                  "small_order_fee" varchar(255),
+                  "vat_percentage_amount" varchar(255),
+                  "tag" varchar(255),
+                  "tags" varchar(255),
+                  "trade_register_number" varchar(255),
+                  "legal_name" varchar(2048),
+                  "address_line_1" varchar(2048)
                 );"""
-        sql2 = """CREATE TABLE "product_list_merge" (
-                          "batch_no" varchar(64) NOT NULL,
-                          "biz_type" varchar(16) NOT NULL,
-                          "pos_product_id" varchar(64) NOT NULL,
-                          "product_type" varchat(32) NOT NULL,
-                          "name" varchar(255),
-                          "category" varchar(255),
-                          "sub_product_ids" text(2048),
-                          "description" varchar(255),
-                          "price" varchar(32),
-                          "min" varchar(32),
-                          "max" varchar(32),
-                          "images" varchar(255),
-                          "block_list" varchar(255)
-                        );"""
+
         cur.execute(sql)
-        cur.execute(sql2)
         print("create table success")
         return True
     except OperationalError as o:
@@ -193,6 +256,7 @@ def prepare_data(item):
 
 
 def fetch_data(page_url, variables):
+    variables = parse(page_url)
     api_url = 'https://%s.fd-api.com/api/v5/vendors/%s?include=bundles,multiple_discounts&language_id=6&basket_currency=TWD&show_pro_deals=true'
     complete_url = api_url % (variables['country'], variables['id'])
     headers = {
@@ -290,21 +354,109 @@ def process_category(item):
 
 
 def save_to_db(item, conn):
-    product_data_sql_list = (item.batchNo, item.biz_type, item.chain_id, item.chain_code, item.chain_name,
-                             item.store_id, item.store_code, item.store_name, item.store_url, item.store_address,
-                             item.customer_phone, item.longitude, item.latitude, item.country, item.city, item.location)
+    data = item.store_data
+    cuisines_list = data.get('cuisines')
+    cuisines_id = []
+    cuisines_name = []
+    cuisines_main = []
+    if cuisines_list:
+        for cc in cuisines_list:
+            cuisines_id.append(str(cc.get('id')))
+            cuisines_name.append(str(cc.get('name')))
+            cuisines_main.append(str(cc.get('main')))
+    food_characteristics_list = data.get('characteristics', {}).get('food_characteristics')
+    food_characteristics_id = []
+    food_characteristics_name = []
+    food_characteristics_is_halal = []
+    food_characteristics_is_vegetarian = []
+    if food_characteristics_list:
+        for fc in food_characteristics_list:
+            food_characteristics_id.append(fc.get('id'))
+            food_characteristics_name.append(fc.get('name'))
+            food_characteristics_is_halal.append(str(fc.get('is_halal')))
+            food_characteristics_is_vegetarian.append(str(fc.get('is_vegetarian')))
+
+    schedules_list = data.get('schedules')
+    schedules_map = {}
+    if schedules_list:
+        for sc in schedules_list:
+            if sc.get('opening_type') == 'pickup':
+                schedules_map[f'weekday_{sc.get("weekday")}_opening'] = sc.get('opening_time')
+                schedules_map[f'weekday_{sc.get("weekday")}_closing'] = sc.get('closing_time')
+
+    product_data_sql_list = (
+        # 1-10
+        item.batchNo, item.biz_type, data.get('web_path'), data.get('id'), data.get('code'),
+        data.get('accepts_instructions'), data.get('address'), data.get('address_line2'), data.get('budget'),
+        data.get('chain', {}).get('id'),
+        # 11-20
+        data.get('chain', {}).get('main_vendor_id'), data.get('chain', {}).get('name'),
+        data.get('chain', {}).get('code'),
+        data.get('city', {}).get('id'), data.get('city', {}).get('name'), '|'.join(cuisines_id),
+        '|'.join(cuisines_name), '|'.join(cuisines_main),
+        data.get('characteristics', {}).get('primary_cuisine', {}).get('id'),
+        data.get('characteristics', {}).get('primary_cuisine', {}).get('name'),
+        # 21-30
+        str(data.get('characteristics', {}).get('primary_cuisine', {}).get('main')),
+        '|'.join(food_characteristics_id), '|'.join(food_characteristics_name), '|'.join(food_characteristics_is_halal),
+        '|'.join(food_characteristics_is_vegetarian), data.get('customer_phone'),
+        data.get('hero_image'), data.get('hero_listing_image'), data.get('description'), str(data.get('is_active')),
+        # 31-40
+        str(data.get('is_checkout_comment_enabled', '')), data.get('is_new_until', ''),
+        str(data.get('is_delivery_enabled', '')), str(data.get('is_pickup_enabled', '')),
+        str(data.get('is_preorder_enabled', '')), str(data.get('is_service_fee_enabled', '')),
+        str(data.get('is_service_tax_enabled', '')), str(data.get('is_service_tax_visible', '')),
+        str(data.get('is_vat_disabled', '')), str(data.get('is_vat_included_in_product_price', '')),
+        # 41-50
+        str(data.get('is_vat_visible', '')), str(data.get('is_vat_included', '')), str(data.get('latitude', '')),
+        str(data.get('location', '')), str(data.get('logo', '')), str(data.get('longitude', '')),
+        str(data.get('food_license_number', '')), str(data.get('metadata', {}).get('timezone', '')),
+        str(data.get('minimum_order_amount', '')), str(data.get('minimum_pickup_time', '')),
+        # 51-60
+        str(data.get('multiple_toppings', '')), str(data.get('name', '')), str(data.get('post_code', '')),
+        str(data.get('rating', '')), str(data.get('review_number', '')), schedules_map.get('weekday_1_opening'),
+        schedules_map.get('weekday_1_closing'), schedules_map.get('weekday_2_opening'),
+        schedules_map.get('weekday_2_closing'), schedules_map.get('weekday_3_opening'),
+        # 61-70
+        schedules_map.get('weekday_3_closing'), schedules_map.get('weekday_4_opening'),
+        schedules_map.get('weekday_4_closing'), schedules_map.get('weekday_5_opening'),
+        schedules_map.get('weekday_5_closing'), schedules_map.get('weekday_6_opening'),
+        schedules_map.get('weekday_6_closing'), schedules_map.get('weekday_7_opening'),
+        schedules_map.get('weekday_7_closing'), str(data.get('service_fee', '')),
+        # 71-80
+        str(data.get('service_fee_percentage_amount', '')), str(data.get('service_tax_percentage_amount', '')),
+        str(data.get('short_name', '')), str(data.get('small_order_fee', '')),
+        str(data.get('vat_percentage_amount', '')), str(data.get('tag', '')), str(data.get('tags', '')),
+        str(data.get('trade_register_number', '')), str(data.get('vendor_legal_information', {}).get('legal_name', '')),
+        str(data.get('vendor_legal_information', {}).get('address_line_1', ''))
+
+    )
 
     cur = conn.cursor()
     try:
-        select_sql = """select count(1) as count from store_list where biz_type='food_panda' and store_code=? """
+        select_sql = """select count(1) as count from store_list where biz_type='food_panda' and code=? """
         cur.execute(select_sql, (item.store_code,))
         count = cur.fetchone()[0]
         if count <= 0:
-            insert_many_sql = """INSERT INTO "store_list" ("batch_no", "biz_type", "chain_id", "chain_code", "chain_name", "store_id",
-             "store_code", "store_name", "store_url", "store_address", "customer_phone", "longitude", "latitude", "country", "city", "location") 
-            VALUES  (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"""
+            insert_many_sql = """INSERT INTO "store_list" (
+            "batch_no", "biz_type", "web_path", "ID", "code", "accepts_instructions", "address", "address_line2", "budget", "chain_id", 
+            "chain_main_vendor_id", "chain_name", "chain_code", "city_id", "city_name", "cuisines_id", "cuisines_name", "cuisines_main","primary_cuisine_id", "primary_cuisine_name",
+             "primary_cuisine_main", "food_characteristics_id", "food_characteristics_name", "food_characteristics_is_halal", "food_characteristics_is_vegetarian", "customer_phone", "hero_image", "hero_listing_image", "description", "is_active",
+             "is_checkout_comment_enabled", "is_new_until", "is_delivery_enabled", "is_pickup_enabled", "is_preorder_enabled", "is_service_fee_enabled", "is_service_tax_enabled", "is_service_tax_visible", "is_vat_disabled", "is_vat_included_in_product_price", 
+            "is_vat_visible", "is_vat_included", "latitude", "location", "logo", "longitude", "food_license_number", "timezone", "minimum_order_amount", "minimum_pickup_time",
+              "multiple_toppings", "name", "post_code", "rating", "review_number", "weekday_1_opening", "weekday_1_closing", "weekday_2_opening", "weekday_2_closing", "weekday_3_opening",
+              "weekday_3_closing", "weekday_4_opening", "weekday_4_closing", "weekday_5_opening", "weekday_5_closing", "weekday_6_opening", "weekday_6_closing", "weekday_7_opening", "weekday_7_closing", "service_fee",
+               "service_fee_percentage_amount", "service_tax_percentage_amount", "short_name", "small_order_fee", "vat_percentage_amount", "tag", "tags", "trade_register_number", "legal_name", "address_line_1") 
+                                     VALUES (?,?,?,?,?,?,?,?,?,?,
+                                     ?,?,?,?,?,?,?,?,?,?,
+                                     ?,?,?,?,?,?,?,?,?,?,
+                                     ?,?,?,?,?,?,?,?,?,?,
+                                     ?,?,?,?,?,?,?,?,?,?,
+                                     ?,?,?,?,?,?,?,?,?,?,
+                                     ?,?,?,?,?,?,?,?,?,?,
+                                     ?,?,?,?,?,?,?,?,?,?);"""
             cur.execute(insert_many_sql, product_data_sql_list)
-            print("save origin data:", cur.rowcount)
+            # print("save origin data:", cur.rowcount)
             conn.commit()
     except Exception as e:
         logging.error(str(e))
@@ -605,95 +757,39 @@ def update_sub_ids(product_type, ids_str, conn, batch_no):
         cur.close()
 
 
-# 爬虫去重逻辑
-# 1. (single) name+price 去重
-# 2. (group) name+min+max 去重（如果可以，就通过blocklist实现 - P1）
-# 3. (modifier) name+price 去重（如果可以，就通过blocklist实现 - P1）
-
-def process_final_list(item, conn):
-    # product
-    product_list_sql = """SELECT DISTINCT batch_no, biz_type,pos_product_id,product_type,name, 
-    GROUP_CONCAT(DISTINCT category) as category,
-    group_concat(DISTINCT sub_product_ids) as sub_product_ids,description,price,min,max,images FROM product_list WHERE batch_no=? and product_type='SINGLE' 
-    GROUP BY name,price;  """
-    cur = conn.cursor()
-    try:
-        cur.execute(product_list_sql, (item.batchNo,))
-        product_list = cur.fetchall()
-    except Exception as e:
-        logging.error(str(e))
-        return False
-    finally:
-        cur.close()
-    save_to_merge_db(product_list, conn)
-
-    # group
-    group_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,batch_no,
-    biz_type,pos_product_id,product_type,name,  
-    category,group_concat(DISTINCT sub_product_ids) as sub_product_ids,description,price,min,max,images 
-    FROM product_list WHERE batch_no=? and product_type='GROUP' GROUP BY name,min,max;  """
-
-    cur = conn.cursor()
-    try:
-        cur.execute(group_list_sql, (item.batchNo,))
-        group_list = cur.fetchall()
-        fixed_group_list = []
-        for gg in group_list:
-            pos_product_ids = gg[0]
-            id_list = pos_product_ids.split(',', 1)
-            if len(id_list) == 2:
-                update_sub_ids('SINGLE', pos_product_ids, conn, item.batchNo)
-            fixed_group_list.append(
-                (gg[1], gg[2], gg[3], gg[4], gg[5], gg[6], gg[7], gg[8], gg[9], gg[10], gg[11], gg[12]))
-    except Exception as e:
-        logging.error(str(e))
-        return False
-    finally:
-        cur.close()
-    save_to_merge_db(fixed_group_list, conn)
-    # modifier
-    modifier_list_sql = """SELECT DISTINCT group_concat(DISTINCT pos_product_id) as pos_product_id_merge,
-        group_concat(DISTINCT sub_product_ids) as sub_product_ids_merge,batch_no, biz_type,pos_product_id,product_type,name,  
-        category,sub_product_ids,description,price,min,max,images 
-        FROM product_list WHERE batch_no=? and product_type='MODIFIER' GROUP BY name,price;"""
-    modifier_list = []
-    cur = conn.cursor()
-    try:
-        cur.execute(modifier_list_sql, (item.batchNo,))
-        modifier_list = cur.fetchall()
-        fixed_modifier_list = []
-        for gg in modifier_list:
-            pos_product_ids = gg[0]
-            id_list = pos_product_ids.split(',', 1)
-            if len(id_list) == 2:
-                update_sub_ids('GROUP', pos_product_ids, conn, item.batchNo)
-
-            fixed_modifier_list.append(
-                (gg[2], gg[3], gg[4], gg[5], gg[6], gg[7], gg[8], gg[9], gg[10], gg[11], gg[12], gg[13]))
-    except Exception as e:
-        logging.error(str(e))
-        return False
-    finally:
-        cur.close()
-    save_to_merge_db(fixed_modifier_list, conn)
-
-    for gg in modifier_list:
-        sub_product_ids = gg[1]
-        sub_id_list = sub_product_ids.split(',', 1)
-        if len(sub_id_list) == 2:
-            update_sub_ids('GROUP', sub_product_ids, conn, item.batchNo)
-
-
 def process_excel(item, conn):
-    if item.total_count != item.run_index + 1:
-        return
+    # if item.total_count != item.run_index + 1:
+    #     return
     homedir = str(pathlib.Path.home())
-    total_category_list = item.total_category_list
+    # total_category_list = item.total_category_list
 
-    all_excel_data_product = []
+    all_excel_data_product = [["web_path", "ID", "code", "accepts_instructions", "address", "address_line2", "budget",
+                               "id", "main_vendor_id", "name", "code", "id", "name", "id", "name", "main", "id", "name",
+                               "main", "id", "name", "is_halal", "is_vegetarian", "customer_phone", "hero_image",
+                               "hero_listing_image", "description", "is_active", "is_checkout_comment_enabled",
+                               "is_new_until", "is_delivery_enabled", "is_pickup_enabled", "is_preorder_enabled",
+                               "is_service_fee_enabled", "is_service_tax_enabled", "is_service_tax_visible",
+                               "is_vat_disabled", "is_vat_included_in_product_price", "is_vat_visible",
+                               "is_vat_included",
+                               "latitude", "location", "logo", "longitude", "food_license_number", "timezone",
+                               "minimum_order_amount", "minimum_pickup_time", "multiple_toppings", "name", "post_code",
+                               "rating", "review_number", "weekday_1_opening", "weekday_1_closing",
+                               "weekday_2_opening", "weekday_2_closing", "weekday_3_opening", "weekday_3_closing",
+                               "weekday_4_opening", "weekday_4_closing", "weekday_5_opening", "weekday_5_closing",
+                               "weekday_6_opening", "weekday_6_closing", "weekday_7_opening", "weekday_7_closing",
+                               "service_fee", "service_fee_percentage_amount", "service_tax_percentage_amount",
+                               "short_name", "small_order_fee", "vat_percentage_amount", "tag", "tags",
+                               "trade_register_number", "legal_name", "address_line_1"]]
 
-    product_list_sql = """SELECT  "chain_id", "chain_code", "chain_name", "store_id","store_code", "store_name", "store_url", "store_address", "customer_phone", "longitude", "latitude", "country", "city", "location" 
-    FROM store_list where biz_type='food_panda';"""
+    product_list_sql = """SELECT  "web_path", "ID", "code", "accepts_instructions", "address", "address_line2", "budget", "chain_id", 
+            "chain_main_vendor_id", "chain_name", "chain_code", "city_id", "city_name", "cuisines_id", "cuisines_name", "cuisines_main","primary_cuisine_id", "primary_cuisine_name",
+             "primary_cuisine_main", "food_characteristics_id", "food_characteristics_name", "food_characteristics_is_halal", "food_characteristics_is_vegetarian", "customer_phone", "hero_image", "hero_listing_image", "description", "is_active",
+             "is_checkout_comment_enabled", "is_new_until", "is_delivery_enabled", "is_pickup_enabled", "is_preorder_enabled", "is_service_fee_enabled", "is_service_tax_enabled", "is_service_tax_visible", "is_vat_disabled", "is_vat_included_in_product_price", 
+            "is_vat_visible", "is_vat_included", "latitude", "location", "logo", "longitude", "food_license_number", "timezone", "minimum_order_amount", "minimum_pickup_time",
+              "multiple_toppings", "name", "post_code", "rating", "review_number", "weekday_1_opening", "weekday_1_closing", "weekday_2_opening", "weekday_2_closing", "weekday_3_opening",
+              "weekday_3_closing", "weekday_4_opening", "weekday_4_closing", "weekday_5_opening", "weekday_5_closing", "weekday_6_opening", "weekday_6_closing", "weekday_7_opening", "weekday_7_closing", "service_fee",
+               "service_fee_percentage_amount", "service_tax_percentage_amount", "short_name", "small_order_fee", "vat_percentage_amount", "tag", "tags", "trade_register_number", "legal_name", "address_line_1"
+                FROM store_list where biz_type='food_panda';"""
     cur = conn.cursor()
     try:
         cur.execute(product_list_sql, )
@@ -706,19 +802,33 @@ def process_excel(item, conn):
 
     for dd in all_data_product:
         all_excel_data_product.append(
-            [dd[0], dd[1], dd[2], dd[3], dd[4], dd[5], dd[6], dd[7], dd[8], dd[9], dd[10], dd[11], dd[12], dd[13]])
+            [dd[0], dd[1], dd[2], dd[3], dd[4], dd[5], dd[6], dd[7], dd[8], dd[9],
+             dd[10], dd[11], dd[12], dd[13], dd[14], dd[15], dd[16], dd[17], dd[18], dd[19],
+             dd[20], dd[21], dd[22], dd[23], dd[24], dd[25], dd[26], dd[27], dd[28], dd[29],
+             dd[30], dd[31], dd[32], dd[33], dd[34], dd[35], dd[36], dd[37], dd[38], dd[39],
+             dd[40], dd[41], dd[42], dd[43], dd[44], dd[45], dd[46], dd[47], dd[48], dd[49],
+             dd[50], dd[51], dd[52], dd[53], dd[54], dd[55], dd[56], dd[57], dd[58], dd[59],
+             dd[60], dd[61], dd[62], dd[63], dd[64], dd[65], dd[66], dd[67], dd[68], dd[69],
+             dd[70], dd[71], dd[72], dd[73], dd[74], dd[75], dd[76], dd[77],
+             ])
 
-    columns_sheet_product = ["chain_id", "chain_code", "chain_name", "store_id", "store_code", "store_name",
-                             "store_url", "store_address", "customer_phone", "longitude", "latitude", "country", "city",
-                             "location"]
+    columns_sheet_product = [
+        "", "data", "data", "data", "data", "data", "data",
+        "chain", "chain", "chain", "chain", "city", "city", "cuisines", "cuisines", "cuisines", "primary_cuisine",
+        "primary_cuisine",
+        "primary_cuisine", "food_characteristics", "food_characteristics", "food_characteristics",
+        "food_characteristics", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+    ]
 
     xlsx_path = os.path.join(homedir, "Aim_menu", "store",
                              f"{item.batchNo}.xlsx")
 
-    df2 = pd.DataFrame(all_excel_data_product, columns=columns_sheet_product)
+    df = pd.DataFrame(all_excel_data_product, columns=columns_sheet_product)
 
     with pd.ExcelWriter(xlsx_path) as writer:
-        df2.to_excel(writer, sheet_name='storeList', index=False)
+        df.to_excel(writer, sheet_name='storeList', index=False)
 
     print("Write file to " + xlsx_path)
     # print("Collection complete")
