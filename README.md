@@ -6,7 +6,7 @@
 mac 打包   pyinstaller -F -w -y  Demeter.py -p url_parse.py -p foodpanda.py -p foodgrab.py
 
 ## nuitka mac 打包 
-python3 -m nuitka --follow-imports --standalone --macos-create-app-bundle --disable-console --enable-plugin=pyside6 --macos-app-icon=logo.png ./Demeter.py 
+python3 -m nuitka --follow-imports --standalone --macos-create-app-bundle --disable-console --enable-plugin=pyside6 --macos-app-icon=logo.png ./Adminer.py 
 ## nuitka win  打包 
 python -m nuitka --follow-imports --standalone --onefile --disable-console --enable-plugin=pyside6 --windows-icon-from-ico=logo.png ./Demeter.py 
 
