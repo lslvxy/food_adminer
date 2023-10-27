@@ -25,7 +25,19 @@ class FoodPandaItem:
     biz_type = 'food_panda'
     id = ''
     language = ''
+    chain_code = ''
+    chain_id = ''
+    chain_name = ''
+    store_id = ''
+    store_code = ''
     store_name = ''
+    store_url = ''
+    store_address = ''
+    longitude = ''
+    latitude = ''
+    country = ''
+    city = ''
+    location = ''
     photoHref = ''
     image_list = []
     categories = []
@@ -39,61 +51,75 @@ class FoodPandaItem:
     tree = False
     total_sub_group = []
     total_sub_item = []
+    chain = {}
 
 
-def parse_foodpandaV2(page_url, variables):
+global_batch_no = ''
+
+
+def parse_foodpandaV2(variables):
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    batch_no = f'panda{timestamp}'
+    batch_no = f'{timestamp}'
+    global_batch_no = batch_no
     print(f'run batch no:{batch_no}')
     logging.info(f'run batch no:{batch_no}')
-
-    root_data = fetch_data(page_url, variables)
+    url_list = variables['url_list']
+    for p_idx, page_url in enumerate(url_list):
+        print(f'processing: {p_idx + 1}/{len(url_list)}')
+    root_data = fetch_data(variables)
     store_data = root_data.get('data', None)
 
     if store_data is None:
         print("Failure to parse menu data")
         return
-    menus = store_data.get('menus', None)
-    if menus is None:
-        print("Failure to parse menu data")
-        return
     item = FoodPandaItem()
+    item.run_index = variables['run_index']
+    item.total_count = variables['total_count']
     item.batchNo = batch_no
-    item.id = store_data.get('ID')
+    item.store_id = store_data.get('id')
     item.store_name = store_data.get('name')
+    item.store_code = store_data.get('code')
+    item.store_url = store_data.get('web_path')
+    item.store_address = store_data.get('address')
+
+    item.chain_id = store_data.get('chain')['id']
+    item.chain_name = store_data.get('chain')['name']
+    item.chain_code = store_data.get('chain')['code']
+    item.longitude = store_data.get('longitude')
+    item.latitude = store_data.get('latitude')
+    item.country = store_data.get('chain')
+    item.city = store_data.get('city')['name']
+    item.location = store_data.get('location')
+    item.customer_phone = store_data.get('customer_phone')
+
     item.photoHref = store_data.get('photoHref')
-    menus = store_data.get('menus', None)
-    if menus is None:
-        print("Failure to parse menu data")
-        return
-    item.menus = menus[0].get('menu_categories')
-    item.toppings = menus[0].get('toppings')
+    item.chain = store_data.get('chain')
+
     item.language = variables['language']
+    item.country = variables['country']
 
-    clean_data(item)
+    # clean_data(item)
     prepare_data(item)
-
-    compose_images(item)
-    if not '?img=no' in page_url:
-        save_images(item)
-    process_category(item)
-    process_product(item)
-    process_group(item)
-    process_item(item)
-    if item.tree:
-        # process_sub_group(item)
-        process_sub_item(item)
+    process_store(item)
+    # compose_images(item)
+    # if not '?img=no' in page_url:
+    #     save_images(item)
+    # process_category(item)
+    # process_product(item)
+    # process_group(item)
+    # process_item(item)
+    # if item.tree:
+    # process_sub_group(item)
+    # process_sub_item(item)
 
     conn = sqlite3.connect(item.db_path)
     save_to_db(item, conn)
-    process_final_list(item, conn)
+    # process_final_list(item, conn)
     process_excel(item, conn)
 
-    parse_foodpandaV1(item, variables)
     return True
 
-
-def clean_data(item):
+    # def clean_data(item):
     homedir = str(pathlib.Path.home())
     store_path = os.path.join(homedir, "Aim_menu", item.biz_type, f"{fixStr(item.store_name.strip())}")
     if os.path.exists(store_path):
@@ -103,7 +129,7 @@ def clean_data(item):
 
 def prepare_data(item):
     homedir = str(pathlib.Path.home())
-    dir_path = os.path.join(homedir, "Aim_menu")
+    dir_path = os.path.join(homedir, "Aim_menu", "store")
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
     db_path = os.path.join(homedir, "Aim_menu", ".data.db")
@@ -151,13 +177,13 @@ def prepare_data(item):
         print("create table success")
         return True
     except OperationalError as o:
-        print(str(o))
+        # print(str(o))
         pass
         if str(o) == "table product_list already exists":
             return True
         return False
     except Exception as e:
-        print(e)
+        # print(e)
         return False
     finally:
         cur.close()
@@ -167,7 +193,7 @@ def prepare_data(item):
 
 
 def fetch_data(page_url, variables):
-    api_url = 'https://%s.fd-api.com/api/v5/vendors/%s?include=menus,bundles,multiple_discounts&language_id=6&basket_currency=TWD&show_pro_deals=true'
+    api_url = 'https://%s.fd-api.com/api/v5/vendors/%s?include=bundles,multiple_discounts&language_id=6&basket_currency=TWD&show_pro_deals=true'
     complete_url = api_url % (variables['country'], variables['id'])
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.69',
@@ -179,7 +205,7 @@ def fetch_data(page_url, variables):
     i = 0
     while i < 10:
         if response.status_code == 200:
-            print("Request to page, data being pulled")
+            # print("Request to page, data being pulled")
             break
         i += 1
         print("Page response failed, retrying")
@@ -238,6 +264,10 @@ def save_images(item):
                 break
 
 
+def process_store(item):
+    pass
+
+
 def process_category(item):
     total_category_list = []
     category_name_set = set()
@@ -260,30 +290,22 @@ def process_category(item):
 
 
 def save_to_db(item, conn):
-    total_product_map = item.total_product_map
-    total_group_map = item.total_group_map
-    total_modifier_map = item.total_modifier_map
-    total_sub_group = item.total_sub_group
-    total_sub_item = item.total_sub_item
-    # all_data_product = dict(**dict(**total_product_map, **total_group_map), **total_modifier_map)
-    all_data_product = total_product_map + total_group_map + total_modifier_map + total_sub_group + total_sub_item
-    product_data_sql_list = []
-    for dd in all_data_product:
-        product_data_sql = (
-            item.batchNo, item.biz_type, dd.get('product_id'), dd.get('product_type'), dd.get('product_name'),
-            urllib.parse.quote_plus(dd.get('category_name')), ','.join(dd.get('sub_product_ids')),
-            dd.get('product_description'),
-            dd.get('product_price'), dd.get('selection_range_min'), dd.get('selection_range_max'),
-            dd.get('product_image'))
-        product_data_sql_list.append(product_data_sql)
+    product_data_sql_list = (item.batchNo, item.biz_type, item.chain_id, item.chain_code, item.chain_name,
+                             item.store_id, item.store_code, item.store_name, item.store_url, item.store_address,
+                             item.customer_phone, item.longitude, item.latitude, item.country, item.city, item.location)
+
     cur = conn.cursor()
     try:
-        insert_many_sql = """INSERT INTO "product_list" ("batch_no", "biz_type","pos_product_id", "product_type", "name", 
-                        "category", "sub_product_ids", "description", "price", "min", "max", "images")
-                         VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
-        cur.executemany(insert_many_sql, product_data_sql_list)
-        print("save origin data:", cur.rowcount)
-        conn.commit()
+        select_sql = """select count(1) as count from store_list where biz_type='food_panda' and store_code=? """
+        cur.execute(select_sql, (item.store_code,))
+        count = cur.fetchone()[0]
+        if count <= 0:
+            insert_many_sql = """INSERT INTO "store_list" ("batch_no", "biz_type", "chain_id", "chain_code", "chain_name", "store_id",
+             "store_code", "store_name", "store_url", "store_address", "customer_phone", "longitude", "latitude", "country", "city", "location") 
+            VALUES  (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"""
+            cur.execute(insert_many_sql, product_data_sql_list)
+            print("save origin data:", cur.rowcount)
+            conn.commit()
     except Exception as e:
         logging.error(str(e))
         return False
@@ -634,7 +656,7 @@ def process_final_list(item, conn):
         group_concat(DISTINCT sub_product_ids) as sub_product_ids_merge,batch_no, biz_type,pos_product_id,product_type,name,  
         category,sub_product_ids,description,price,min,max,images 
         FROM product_list WHERE batch_no=? and product_type='MODIFIER' GROUP BY name,price;"""
-    modifier_list=[]
+    modifier_list = []
     cur = conn.cursor()
     try:
         cur.execute(modifier_list_sql, (item.batchNo,))
@@ -647,7 +669,7 @@ def process_final_list(item, conn):
                 update_sub_ids('GROUP', pos_product_ids, conn, item.batchNo)
 
             fixed_modifier_list.append(
-                (gg[2], gg[3], gg[4], gg[5], gg[6], gg[7], gg[8], gg[9], gg[10], gg[11], gg[12],gg[13] ))
+                (gg[2], gg[3], gg[4], gg[5], gg[6], gg[7], gg[8], gg[9], gg[10], gg[11], gg[12], gg[13]))
     except Exception as e:
         logging.error(str(e))
         return False
@@ -663,54 +685,18 @@ def process_final_list(item, conn):
 
 
 def process_excel(item, conn):
+    if item.total_count != item.run_index + 1:
+        return
     homedir = str(pathlib.Path.home())
     total_category_list = item.total_category_list
 
-    all_excel_data_product = [
-        ['This row contain the description and instruction of each fields.',
-         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP.',
-         'Indicate where this is an SINGLE, MODIFIER or GROUP. Single refers to the main item. Modifier refers to an option under an item. Group refers to Modifer group.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP. Max 80 characters. ',
-         '(REQUIRED) The name of the category for the item. The name need to correspond with the category in \'categoryList\' or an existing category in backoffice.',
-         '(OPTIONAL) The PosProductIDs of the Group or Modifier that should be a subset. Group is subset of Single. Modifier is subset of Group. Use | as to separate multiple IDs. ',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP. Max 300 characters',
-         '(REQUIRED) The price of the Single or Modifier. Leave blank for GROUP. ',
-         '(REQUIRED) The mininum number of options to select for GROUP. Leave blank for SINGLE and MODIFIER.',
-         '(REQUIRED) The maximum number of options to select for GROUP. Leave blank for SINGLE and MODIFIER.',
-         '(OPTIONAL) The file name of the image for this SINGLE or MODIFIER. Ensure it correspond with the actual image file. ',
-         '(OPTIONAL) The posProductID of the MODIFIER to be excluded from an item. Use | to separate multiple IDs.']]
-    all_excel_data_category = [
-        ['This row contain the description and instruction of each fields.',
-         '(REQUIRED) Fill in the new categories to create. The name need to correspond with the \'category\' under productList. Only for new categories. Max 80 characters.',
-         '(OPTIONAL) The description of category. Max 300 characters.',
-         '(OPTIONAL) The file name of the image for this CATEGORY. Ensure it correspond with the actual image file. ']]
-    all_excel_data_lang_zh = [
-        ['This row contain the description and instruction of each fields.',
-         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP. The ID needs to correspond with the \'posProductId\' under productList.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Chinese. Max 80 characters. ',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Chinese. Max 300 characters. Only required if you have input a description under productList.']]
-    all_excel_data_lang_th = [
-        ['This row contain the description and instruction of each fields.',
-         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP. The ID needs to correspond with the \'posProductId\' under productList.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Thai. Max 80 characters. ',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Thai. Max 300 characters. Only required if you have input a description under productList.']]
-    all_excel_data_lang_ms = [
-        ['This row contain the description and instruction of each fields.',
-         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP. The ID needs to correspond with the \'posProductId\' under productList.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in Malay. Max 80 characters. ',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in Malay. Max 300 characters. Only required if you have input a description under productList.']]
-    all_excel_data_lang_en = [
-        ['This row contain the description and instruction of each fields.',
-         '(REQUIRED) This is your unique product ID of SINGLE, MODIFIER or GROUP. The ID needs to correspond with the \'posProductId\' under productList.',
-         '(REQUIRED) The name of the SINGLE, MODIFIER or GROUP in English. Max 80 characters. ',
-         '(OPTIONAL) The description of SINGLE, MODIFIER or GROUP in English. Max 300 characters. Only required if you have input a description under productList.']]
+    all_excel_data_product = []
 
-    product_list_sql = """SELECT pos_product_id,product_type,name,REPLACE(category,',','|') 
-            as category,sub_product_ids,description,price,min,max,images,block_list
-            FROM product_list_merge WHERE batch_no=?;"""
+    product_list_sql = """SELECT  "chain_id", "chain_code", "chain_name", "store_id","store_code", "store_name", "store_url", "store_address", "customer_phone", "longitude", "latitude", "country", "city", "location" 
+    FROM store_list where biz_type='food_panda';"""
     cur = conn.cursor()
     try:
-        cur.execute(product_list_sql, (item.batchNo,))
+        cur.execute(product_list_sql, )
         all_data_product = cur.fetchall()
     except Exception as e:
         logging.error(str(e))
@@ -719,253 +705,23 @@ def process_excel(item, conn):
         cur.close()
 
     for dd in all_data_product:
-        sub_product_ids = dd[4]
-        sub_id_list = sub_product_ids.split(',')
-        sub_product_ids = "|".join(set(sub_id_list))
-
         all_excel_data_product.append(
-            ['', dd[0], dd[1], dd[2], urllib.parse.unquote_plus(dd[3]), sub_product_ids, dd[5], dd[6], dd[7], dd[8],
-             dd[9], ''])
+            [dd[0], dd[1], dd[2], dd[3], dd[4], dd[5], dd[6], dd[7], dd[8], dd[9], dd[10], dd[11], dd[12], dd[13]])
 
-    for cc in total_category_list:
-        all_excel_data_category.append(
-            [cc.get('category_id'), cc.get('category_name'), cc.get('category_description'),
-             cc.get('category_image')])
+    columns_sheet_product = ["chain_id", "chain_code", "chain_name", "store_id", "store_code", "store_name",
+                             "store_url", "store_address", "customer_phone", "longitude", "latitude", "country", "city",
+                             "location"]
 
-    columns_sheet_category = ["categoryId", "categoryName", "categoryDescription",
-                              "categoryImage"]
+    xlsx_path = os.path.join(homedir, "Aim_menu", "store",
+                             f"{item.batchNo}.xlsx")
 
-    columns_sheet_product = ["productId", "posProductId", "productType", "name",
-                             "category", "subPosProductIds", "description",
-                             "price", "min", "max", "images",
-                             "blockList"]
-
-    columns_sheet_lang = ["productId", "posProductId", "name", "description"]
-
-    xlsx_path = os.path.join(homedir, "Aim_menu", "food_panda",
-                             f"{item.store_name}_{item.language}_V2.xlsx")
-
-    df1 = pd.DataFrame(all_excel_data_category, columns=columns_sheet_category)
     df2 = pd.DataFrame(all_excel_data_product, columns=columns_sheet_product)
-    df3 = pd.DataFrame(all_excel_data_lang_zh, columns=columns_sheet_lang)
-    df4 = pd.DataFrame(all_excel_data_lang_th, columns=columns_sheet_lang)
-    df5 = pd.DataFrame(all_excel_data_lang_ms, columns=columns_sheet_lang)
-    df6 = pd.DataFrame(all_excel_data_lang_en, columns=columns_sheet_lang)
 
     with pd.ExcelWriter(xlsx_path) as writer:
-        df1.to_excel(writer, sheet_name='categoryList', index=False)
-        df2.to_excel(writer, sheet_name='productList', index=False)
-        df3.to_excel(writer, sheet_name='zh-CN', index=False)
-        df4.to_excel(writer, sheet_name='th-TH', index=False)
-        df5.to_excel(writer, sheet_name='ms-MY', index=False)
-        df6.to_excel(writer, sheet_name='en-US', index=False)
+        df2.to_excel(writer, sheet_name='storeList', index=False)
 
     print("Write file to " + xlsx_path)
     # print("Collection complete")
-
-
-def parse_foodpandaV1(item, variables):
-    homedir = str(pathlib.Path.home())
-    menu_categories = item.menus
-
-    if menu_categories is None:
-        print("Failure to parse menu category data")
-        return
-
-    toppings = item.toppings
-    # print(toppings)
-    food_panda_list = []
-    store_name = item.store_name
-    for category in menu_categories:
-        products_list = category.get('products', None)
-        full_category_name = category['name']
-        category_name = re.sub(r'[:/\\?*“”<>|""]', '_', full_category_name)
-        full_category_descrption = category['description']
-        category_description = re.sub(r'[:/\\?*“”<>|""]', '_', full_category_descrption)
-        # os.path.join("..", "Aim_menu", "food_panda", f"{store_name}", f"{category_name}")
-        dirPath = os.path.join(homedir, "Aim_menu", "food_panda", f"{store_name.strip()}", f"{category_name.strip()}")
-        if not os.path.exists(dirPath):
-            os.makedirs(dirPath)
-        if products_list is None:
-            print("category：{name}，no information".format(name=category['name']))
-            continue
-        for product in products_list:
-            # result = {}
-            # result.clear()
-            item_name = re.sub(r'[:/\\?*“”<>|""]', '_', product.get('name'))
-            total_category = category_name
-            total_category_descrption = category_description
-            total_item_name = item_name
-            total_description = product.get('description')
-            product_variations = product.get('product_variations')
-            total_image = '' if product['images'] == [] else product['images'][0]['image_url']
-            item_image_name = ''
-            if total_image != '':
-                item_image_name = f"{fixStr(item_name.strip())}.jpg"
-            if product_variations is None:
-                print("product ：{name}，no information".format(name=product.get('name')))
-                continue
-            if len(product_variations) == 1:
-                pass
-                # logging.info("only one product ：{name}，no information".format(name=product.get('name')))
-            elif len(product_variations) > 1:
-                # logging.info("multiple products ：{name}".format(name=product.get('name')))
-                for pv in product_variations:
-                    total_package_type = pv.get('name', '')
-                    total_package_price = pv.get('price')
-                    result = {'category': total_category, 'category_description': total_category_descrption,
-                              'item_name': total_item_name, 'description': total_description, 'modifier_group': 'Combo',
-                              'package_price': product_variations[0].get('price'), 'options': total_package_type,
-                              'options_price': total_package_price, 'select_type': 'Single', 'required_or_not': 'TRUE',
-                              'min_available': 1, 'max_available': 1}
-                    food_panda_list.append(result)
-
-            for pv in product_variations:
-                total_package_type = pv.get('name', '')
-                total_package_price = pv.get('price')
-                result = {}
-                result['category'] = total_category
-                result['category_description'] = total_category_descrption
-                result['item_name'] = total_item_name
-                result['item_image'] = item_image_name
-                result['description'] = total_description
-                result['package_type'] = total_package_type
-                result['package_price'] = total_package_price
-                # result['modifier_group'] = total_modifier_group
-                # result['select_type'] = total_select_type
-                # result['required_or_not'] = total_required_or_not
-                # result['min_available'] = total_min_available
-                # result['max_available'] = total_max_available
-                # result['options'] = total_options
-                # result['options_price'] = total_options_price
-                topping_ids = pv['topping_ids']
-                # result = {}
-                # result['category'] = total_category
-                # result['category_description'] = total_category_descrption
-                # result['modifier_group'] = total_package_type
-                # result['options'] = total_package_type
-                # food_panda_list.append(result)
-                if topping_ids:
-                    for topping_id in topping_ids:
-                        topping = toppings.get(str(topping_id))
-                        total_modifier_group = topping.get('name')
-                        total_required_or_not = 'TRUE' if topping.get('quantity_minimum') > 0 else 'FALSE'
-                        if topping.get('quantity_minimum') == topping.get('quantity_maximum') == 1:
-                            total_select_type = 'Single'
-                        else:
-                            total_select_type = 'Multiple'
-
-                        total_min_available = topping.get('quantity_minimum')
-                        total_max_available = topping.get('quantity_maximum')
-                        options = topping['options']
-                        for op in options:
-                            total_options = op.get('name')
-                            total_options_price = op.get('price')
-                            result = {}
-                            result['category'] = total_category
-                            result['category_description'] = total_category_descrption
-                            result['item_name'] = total_item_name
-                            result['item_image'] = item_image_name
-                            result['description'] = total_description
-                            result['package_type'] = total_package_type
-                            result['package_price'] = total_package_price
-                            result['modifier_group'] = total_modifier_group
-                            result['select_type'] = total_select_type
-                            result['required_or_not'] = total_required_or_not
-                            result['min_available'] = total_min_available
-                            result['max_available'] = total_max_available
-                            result['options'] = total_options
-                            result['options_price'] = total_options_price
-                            food_panda_list.append(result)
-                else:
-                    food_panda_list.append(result)
-
-    food_panda_excel_list = []
-    i = 0
-    while i < len(food_panda_list):
-        excel_language = variables.get('language', 'EN')
-        excel_outlet_id = ''
-        excel_outlet_services = ''
-        excel_over_write = ''
-        excel_category_name_en = (food_panda_list[i]).get('category') if isEn(variables) else ''
-        excel_category_name_th = (food_panda_list[i]).get('category') if isTh(variables) else ''
-        excel_category_name_cn = (food_panda_list[i]).get('category') if isCn(variables) else ''
-        excel_category_sku = ''
-        excel_category_description_en = (food_panda_list[i]).get('category_description') if isEn(variables) else ''
-        excel_category_description_th = (food_panda_list[i]).get('category_description') if isTh(variables) else ''
-        excel_category_description_cn = (food_panda_list[i]).get('category_description') if isCn(variables) else ''
-        excel_item_name_en = (food_panda_list[i]).get('item_name') if isEn(variables) else ''
-        excel_item_name_th = (food_panda_list[i]).get('item_name') if isTh(variables) else ''
-        excel_item_name_cn = (food_panda_list[i]).get('item_name') if isCn(variables) else ''
-        excel_item_sku = ''
-        excel_item_image = (food_panda_list[i]).get('item_image')
-        excel_description_en = (food_panda_list[i]).get('description') if isEn(variables) else ''
-        excel_description_th = (food_panda_list[i]).get('description') if isTh(variables) else ''
-        excel_description_cn = (food_panda_list[i]).get('description') if isCn(variables) else ''
-        excel_conditional_modifier = (food_panda_list[i]).get('package_type')
-        excel_item_price = (food_panda_list[i]).get('package_price')
-
-        excel_modifier_group_en = (food_panda_list[i]).get('modifier_group') if isEn(variables) else ''
-        excel_modifier_group_th = (food_panda_list[i]).get('modifier_group') if isTh(variables) else ''
-        excel_modifier_group_cn = (food_panda_list[i]).get('modifier_group') if isCn(variables) else ''
-        excel_modifier_group_sku = ''
-        excel_modifier_group_description_en = ''
-        excel_modifier_group_description_th = ''
-        excel_modifier_group_description_cn = ''
-        excel_select_type = (food_panda_list[i]).get('select_type')
-        excel_required_or_not = (food_panda_list[i]).get('required_or_not')
-        excel_min_available = (food_panda_list[i]).get('min_available')
-        excel_max_available = (food_panda_list[i]).get('max_available')
-
-        excel_modifier_en = (food_panda_list[i]).get('options') if isEn(variables) else ''
-        excel_modifier_th = (food_panda_list[i]).get('options') if isTh(variables) else ''
-        excel_modifier_cn = (food_panda_list[i]).get('options') if isCn(variables) else ''
-        excel_modifier_sku = ''
-        excel_modifier_description_en = ''
-        excel_modifier_description_th = ''
-        excel_modifier_description_cn = ''
-        excel_options_price = (food_panda_list[i]).get('options_price')
-
-        food_panda_excel_list.append(
-            [excel_language, excel_outlet_id, excel_outlet_services, excel_over_write,
-             excel_category_name_en, excel_category_name_th, excel_category_name_cn, excel_category_sku,
-             excel_category_description_en, excel_category_description_th, excel_category_description_cn,
-             excel_item_name_en, excel_item_name_th, excel_item_name_cn, excel_item_sku, excel_item_image,
-             excel_description_en, excel_description_th, excel_description_cn,
-             excel_conditional_modifier, excel_item_price,
-             excel_modifier_group_en, excel_modifier_group_th, excel_modifier_group_cn, excel_modifier_group_sku,
-             excel_modifier_group_description_en, excel_modifier_group_description_th,
-             excel_modifier_group_description_cn,
-             excel_select_type, excel_required_or_not, excel_min_available, excel_max_available,
-             excel_modifier_en, excel_modifier_th, excel_modifier_cn, excel_modifier_sku,
-             excel_modifier_description_en, excel_modifier_description_th, excel_modifier_description_cn,
-             excel_options_price, '', '', '', '', ''])
-        i += 1
-    #     	Outlet ID
-
-    df = pd.DataFrame(food_panda_excel_list,
-                      columns=["Language", "Outlet ID", "Outlet services", "Overwrite (Y/N)", "category_name_en",
-                               "category_name_th",
-                               "category_name_cn", "category_sku", "category_description_en",
-                               "category_description_th",
-                               "category_description_cn", "item_name_en", "item_name_th", "item_name_cn", "item_sku",
-                               "item_image", "description_en", "description_th", "description_cn",
-                               "conditional_modifier", "item_price", "modifier_group_en",
-                               "modifier_group_th", "modifier_group_cn", "modifier_group_sku",
-                               "modifier_group_description_en", "modifier_group_description_th",
-                               "modifier_group_description_cn", "select_type",
-                               "required_or_not", "min_available", "max_available", "modifier_en",
-                               "modifier_th", "modifier_cn", "modifier_sku", "modifier_description_en",
-                               "modifier_description_th", "modifier_description_cn", "options_price", "open_field1",
-                               "open_field2", "open_field3", "open_field4", "open_field5"])
-    df.index = range(1, len(df) + 1)
-    xlsx_path = os.path.join(homedir, "Aim_menu", "food_panda", f"{store_name}_{variables['language']}.xlsx")
-    if os.path.exists(xlsx_path):
-        os.remove(xlsx_path)
-    print("Write file to " + xlsx_path)
-    df.to_excel(xlsx_path, index=False)
-    # print("Collection complete")
-    return True
 
 # if __name__ == '__main__':
 #     test_url = 'https://www.foodpanda.hk/restaurant/v3iw/bakeout-homemade-koppepan'

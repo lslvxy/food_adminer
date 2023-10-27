@@ -8,6 +8,7 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 import logging
+import pathlib
 import sys
 import traceback
 
@@ -24,64 +25,95 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
                            QImage, QKeySequence, QLinearGradient, QPainter,
                            QPalette, QPixmap, QRadialGradient, QTransform, QWindow)
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QLabel, QPushButton,
-                               QRadioButton, QSizePolicy, QTextBrowser, QTextEdit,
-                               QWidget, QListWidget, QVBoxLayout, QLineEdit, QMessageBox)
+                               QRadioButton, QSizePolicy, QTextBrowser, QTextEdit, QFileDialog,
+                               QWidget, QListWidget, QVBoxLayout, QLineEdit, QMessageBox, QCheckBox, QPlainTextEdit,
+                               QSpinBox, QComboBox, QCommandLinkButton, QDialogButtonBox, QDialog)
+import pandas as pd
+
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+                            QMetaObject, QObject, QPoint, QRect,
+                            QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+                           QFont, QFontDatabase, QGradient, QIcon,
+                           QImage, QKeySequence, QLinearGradient, QPainter,
+                           QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QLabel,
+                               QMainWindow, QPushButton, QSizePolicy, QSpinBox,
+                               QTextBrowser, QTextEdit, QWidget)
 
 
-class Ui_Widget(object):
-    def setupUi(self, Widget):
-        if not Widget.objectName():
-            Widget.setObjectName(u"Widget")
-        Widget.resize(800, 600)
-        Widget.setAutoFillBackground(False)
-        self.lineEdit = QLineEdit(Widget)
-        self.lineEdit.setObjectName(u"lineEdit")
-        self.lineEdit.setGeometry(QRect(110, 50, 621, 41))
-        # self.lineEdit.setText(
-        #     u"https://food.grab.com/sg/en/restaurant/mcdonald-s-jurong-green-cc-delivery/SGDD04996?img=no")
-        # self.lineEdit.setText(
-        #     u"https://www.foodpanda.hk/restaurant/v3iw/bakeout-homemade-koppepan")
-        self.label = QLabel(Widget)
-        self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(40, 60, 58, 16))
-        self.radioButton = QRadioButton(Widget)
-        self.buttonGroup = QButtonGroup(Widget)
-        self.buttonGroup.setObjectName(u"buttonGroup")
-        self.buttonGroup.addButton(self.radioButton)
-        self.radioButton.setObjectName(u"EN")
-        self.radioButton.setGeometry(QRect(110, 120, 99, 20))
-        self.radioButton_2 = QRadioButton(Widget)
-        self.buttonGroup.addButton(self.radioButton_2)
-        self.radioButton_2.setObjectName(u"TH")
-        self.radioButton_2.setGeometry(QRect(320, 120, 99, 20))
-        self.radioButton_3 = QRadioButton(Widget)
-        self.buttonGroup.addButton(self.radioButton_3)
-        self.radioButton_3.setObjectName(u"CN")
-        self.radioButton_3.setGeometry(QRect(550, 120, 99, 20))
-        self.label_2 = QLabel(Widget)
-        self.label_2.setObjectName(u"label_2")
-        self.label_2.setGeometry(QRect(30, 120, 71, 16))
-        self.textBrowser = QTextBrowser(Widget)
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        if not MainWindow.objectName():
+            MainWindow.setObjectName(u"MainWindow")
+        MainWindow.resize(800, 600)
+        self.centralwidget = QWidget(MainWindow)
+        self.centralwidget.setObjectName(u"centralwidget")
+        self.textBrowser = QTextBrowser(self.centralwidget)
         self.textBrowser.setObjectName(u"textBrowser")
-        self.textBrowser.setGeometry(QRect(110, 160, 621, 321))
-        self.pushButton = QPushButton(Widget)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setGeometry(QRect(110, 510, 621, 61))
+        self.textBrowser.setGeometry(QRect(100, 180, 600, 251))
+        self.label_2 = QLabel(self.centralwidget)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setGeometry(QRect(40, 130, 58, 16))
+        self.label = QLabel(self.centralwidget)
+        self.label.setObjectName(u"label")
+        self.label.setGeometry(QRect(40, 40, 58, 16))
+        self.spinBox = QSpinBox(self.centralwidget)
+        self.spinBox.setObjectName(u"spinBox")
+        self.spinBox.setGeometry(QRect(371, 460, 51, 30))
+        self.spinBox.setMinimum(1)
+        self.label_3 = QLabel(self.centralwidget)
+        self.label_3.setObjectName(u"label_3")
+        self.label_3.setGeometry(QRect(310, 460, 58, 30))
+        self.btn_start = QPushButton(self.centralwidget)
+        self.btn_start.setObjectName(u"btn_start")
+        self.btn_start.setGeometry(QRect(100, 510, 600, 60))
+        self.checkBox_proxy = QCheckBox(self.centralwidget)
+        self.checkBox_proxy.setObjectName(u"checkBox_proxy")
+        self.checkBox_proxy.setGeometry(QRect(100, 460, 85, 30))
+        self.textEdit_input = QTextEdit(self.centralwidget)
+        self.textEdit_input.setObjectName(u"textEdit_input")
+        self.textEdit_input.setGeometry(QRect(100, 10, 600, 80))
+        self.label_4 = QLabel(self.centralwidget)
+        self.label_4.setObjectName(u"label_4")
+        self.label_4.setGeometry(QRect(520, 460, 81, 30))
+        self.comboBox_export = QComboBox(self.centralwidget)
+        self.comboBox_export.addItem("")
+        self.comboBox_export.addItem("")
+        self.comboBox_export.addItem("")
+        self.comboBox_export.setObjectName(u"comboBox_export")
+        self.comboBox_export.setGeometry(QRect(600, 460, 103, 30))
+        self.btn_file = QPushButton(self.centralwidget)
+        self.btn_file.setObjectName(u"btn_file")
+        self.btn_file.setGeometry(QRect(600, 120, 100, 40))
+        self.lineEdit_filepath = QLineEdit(self.centralwidget)
+        self.lineEdit_filepath.setObjectName(u"lineEdit_filepath")
+        self.lineEdit_filepath.setGeometry(QRect(100, 120, 450, 40))
+        MainWindow.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(Widget)
+        self.retranslateUi(MainWindow)
+        # self.textEdit_input.textChanged.connect(self.lineEdit_filepath.clear)
+        self.lineEdit_filepath.textChanged.connect(self.textEdit_input.clear)
 
-        QMetaObject.connectSlotsByName(Widget)
+        QMetaObject.connectSlotsByName(MainWindow)
 
     # setupUi
 
-    def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Demeter", u"Demeter", None))
-        self.label.setText(QCoreApplication.translate("Widget", u"URL", None))
-        self.radioButton.setText(QCoreApplication.translate("Widget", u"EN", None))
-        self.radioButton_2.setText(QCoreApplication.translate("Widget", u"TH", None))
-        self.radioButton_3.setText(QCoreApplication.translate("Widget", u"CN", None))
-        self.label_2.setText(QCoreApplication.translate("Widget", u"Language", None))
-        self.pushButton.setText(QCoreApplication.translate("Widget", u"Start", None))
+    def retranslateUi(self, MainWindow):
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Adminer", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"File", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"URL", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Interval", None))
+        self.btn_start.setText(QCoreApplication.translate("MainWindow", u"Start", None))
+        self.checkBox_proxy.setText(QCoreApplication.translate("MainWindow", u"Use Proxy", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"Export Excel", None))
+        self.comboBox_export.setItemText(0, QCoreApplication.translate("MainWindow", u"None", None))
+        self.comboBox_export.setItemText(1, QCoreApplication.translate("MainWindow", u"Current", None))
+        self.comboBox_export.setItemText(2, QCoreApplication.translate("MainWindow", u"All", None))
+
+        self.btn_file.setText(QCoreApplication.translate("MainWindow", u"Choose File", None))
+
+    # retranslateUi
 
 
 class EmittingStr(QtCore.QObject):
@@ -95,100 +127,128 @@ class EmittingStr(QtCore.QObject):
         QApplication.processEvents()
 
 
-class mywindow(QWidget, Ui_Widget):
+class MainWindow(QMainWindow):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        sys.stdout = EmittingStr()
+        sys.stdout.textWritten.connect(self.output_written)
+        self.ui.btn_start.clicked.connect(self.loginFuc)
+        self.ui.checkBox_proxy.stateChanged.connect(self.proxyChange)
+        self.ui.btn_file.clicked.connect(self.chooseFile)
+
     url = ""
     language = ""
 
-    def __init__(self):
-        super(mywindow, self).__init__()
-        self.setupUi(self)
-        self.ListWidget = QListWidget()
-        self.mainLayout = QVBoxLayout()
-        # self.pushButton.clicked.connect(self.loginFuc)
-        sys.stdout = EmittingStr()
-        sys.stdout.textWritten.connect(self.output_written)
-        self.pushButton.clicked.connect(self.loginFuc)
-        self.lineEdit.textChanged.connect(self.loginFuc2)
-
     def output_written(self, text):
-        cursor = self.textBrowser.textCursor()
+        cursor = self.ui.textBrowser.textCursor()
         cursor.movePosition(QtGui.QTextCursor.End)
         cursor.insertText(text)
-        self.textBrowser.setTextCursor(cursor)
-        self.textBrowser.ensureCursorVisible()
+        self.ui.textBrowser.setTextCursor(cursor)
+        self.ui.textBrowser.ensureCursorVisible()
 
-    def loginFuc2(self):
-        page_url = self.lineEdit.text()
-        variables = parse(page_url)
-        if variables == {}:
-            # self.a = 'Unsupported page addresses'
-            # self.ListWidget.addItem(self.a)
-            print('Unsupported page addresses')
-        else:
-            print('Language is ' + variables.get("language"))
-            radio = self.findChild(QRadioButton, variables.get("language"))
-            if radio:
-                radio.setChecked(True)
-            else:
-                print('Use default Language EN')
-                self.findChild(QRadioButton, "EN").setChecked(True)
+    def proxyChange(self):
+        checked = self.ui.checkBox_proxy.checkState()
+        if checked == Qt.Checked:
+            print("1")
+
+    def chooseFile(self):
+        homedir = str(pathlib.Path.home())
+
+        filename_path, ok = QFileDialog.getOpenFileName(self, "Please Choose File", homedir,
+                                                        "Xlsx Files (*.xlsx);;Xls Files (*.xls);;CSV Files (*.csv)")
+        # print(filename_path)
+        self.ui.lineEdit_filepath.setText(filename_path)
+        self.ui.textEdit_input.setPlainText('')
 
     def loginFuc(self):
         # msgBox = QMessageBox(self)
         # msgBox.setWindowTitle("Demeter")
-        language = self.buttonGroup.checkedButton().text()
-        page_url = self.lineEdit.text()
-        self.textBrowser.clear()
+        self.ui.textBrowser.clear()
+        language = 'en'  # self.buttonGroup.checkedButton().text()
+        text_urls = self.ui.textEdit_input.toPlainText()
+        url_list = set()
+        if text_urls:
+            _list = text_urls.split('\n')
+            for item in _list:
+                if item:
+                    url_list.add(item)
 
-        variables = parse(page_url)
-        if variables == {}:
-            # self.a = 'Unsupported page addresses'
-            # self.ListWidget.addItem(self.a)
-            print('Unsupported page addresses')
-        else:
-            self.pushButton.setDisabled(True)
-            variables['language'] = language
-            print('Language is ' + language)
-            if variables.get('type') == 'foodgrab':
+        file_path = self.ui.lineEdit_filepath.text()
+        if file_path:
+            df = pd.read_excel(file_path, header=None)
+            rows = df.values
+            for p_idx, r in enumerate(rows):
+                if r[0]:
+                    url_list.add(r[0])
 
-                # self.a = parse_foodgrabV2(page_url, variables)
-                # for i in self.a:
-                #     self.ListWidget.addItem(i)
-                # self.mainLayout.addWidget(self.ListWidget)
-                # self.setLayout(self.mainLayout)
-                try:
-                    parse_foodgrabV2(page_url, variables)
-                    print("Collection complete")
-                except Exception as e:
-                    print('Collection Fail!')
-                    print("Collection Exception: %s" % e)
-                    traceback.print_exc()
-                    self.pushButton.setDisabled(False)
-                    # msgBox.exec()
+        variables = {}
+        for p_idx, page_url in enumerate(url_list):
+            if p_idx == 0:
+                variables = parse(page_url)
+        variables['url_list'] = url_list
+        checked = self.ui.checkBox_proxy.checkState()
+        variables['use_proxy'] = False
+        if checked == Qt.Checked:
+            variables['use_proxy'] = True
 
-            elif variables.get('type') == 'foodpanda':
+        variables['interval'] = self.ui.spinBox.text()
+        variables['export_type'] = self.ui.comboBox_export.currentText()
+        # variables['run_index'] = p_idx
+        # variables['total_count'] = len(url_list)
+        parse_foodpandaV2(variables)
 
-                # //self.a = parse_foodpanda(page_url, variables)
-                # //for i in self.a:
-                #     self.ListWidget.addItem(i)
-                # self.mainLayout.addWidget(self.ListWidget)
-                # self.setLayout(self.mainLayout)
-                try:
-                    parse_foodpandaV2(page_url, variables)
-                    print("Collection complete")
-                except Exception as e:
-                    print('Collection Fail!')
-                    print("Collection Exception: %s" % e)
-                    traceback.print_exc()
-                    self.pushButton.setDisabled(False)
-                    # msgBox.exec()
-            self.pushButton.setDisabled(False)
+        # else:
+        #     variables = parse(page_url)
+        #     if variables == {}:
+        #         # self.a = 'Unsupported page addresses'
+        #         # self.ListWidget.addItem(self.a)
+        #         print('Unsupported page addresses')
+        #     else:
+        #         self.pushButton.setDisabled(True)
+        #         variables['language'] = language
+        #         print('Language is ' + language)
+        #         if variables.get('type') == 'foodgrab':
+        #
+        #             # self.a = parse_foodgrabV2(page_url, variables)
+        #             # for i in self.a:
+        #             #     self.ListWidget.addItem(i)
+        #             # self.mainLayout.addWidget(self.ListWidget)
+        #             # self.setLayout(self.mainLayout)
+        #             try:
+        #                 parse_foodgrabV2(page_url, variables)
+        #                 print("Collection complete")
+        #             except Exception as e:
+        #                 print('Collection Fail!')
+        #                 print("Collection Exception: %s" % e)
+        #                 traceback.print_exc()
+        #                 self.pushButton.setDisabled(False)
+        #                 # msgBox.exec()
+        #
+        #         elif variables.get('type') == 'foodpanda':
+        #
+        #             # //self.a = parse_foodpanda(page_url, variables)
+        #             # //for i in self.a:
+        #             #     self.ListWidget.addItem(i)
+        #             # self.mainLayout.addWidget(self.ListWidget)
+        #             # self.setLayout(self.mainLayout)
+        #             try:
+        #                 parse_foodpandaV2(page_url, variables)
+        #                 print("Collection complete")
+        #             except Exception as e:
+        #                 print('Collection Fail!')
+        #                 print("Collection Exception: %s" % e)
+        #                 traceback.print_exc()
+        #                 self.pushButton.setDisabled(False)
+        #                 # msgBox.exec()
+        #         self.pushButton.setDisabled(False)
 
         #         print(variables)
 
 
-if __name__ == '__main__':
-    app = QApplication([])
-    window = mywindow()
-    window.show()
-    app.exec()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    widget = MainWindow()
+    widget.show()
+    sys.exit(app.exec())
