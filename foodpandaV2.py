@@ -256,7 +256,7 @@ def prepare_data(item):
 
 
 def fetch_data(page_url, variables):
-    variables = parse(page_url)
+    variables.update(parse(page_url))
     api_url = 'https://%s.fd-api.com/api/v5/vendors/%s?include=bundles,multiple_discounts&language_id=6&basket_currency=TWD&show_pro_deals=true'
     complete_url = api_url % (variables['country'], variables['id'])
     headers = {
@@ -265,7 +265,38 @@ def fetch_data(page_url, variables):
         'Accept-Encoding': 'gzip, deflate, br'
     }
     payload = {}
-    response = requests.request("GET", complete_url, headers=headers, data=payload)
+    if variables['use_proxy']:
+        url = ''
+        username = ''
+        password = ''
+        proxy = url
+        homedir = str(pathlib.Path.home())
+        file_path = os.path.join(homedir, ".config", 'adminer.cfg')
+        if os.path.isfile(file_path):
+            f = open(file_path)
+            lines = f.readlines()
+            for line in lines:
+                kv = line.split("=")
+                if kv[0] == 'url':
+                    url = kv[1].strip()
+                if kv[0] == 'username':
+                    username = kv[1].strip()
+                if kv[0] == 'password':
+                    password = kv[1].strip()
+            f.close()
+        else:
+            print("No Proxy Config Found!")
+
+        if not f'{username}:{password}' in url:
+            proxy = url.replace('http://', f'http://{username}:{password}@').replace('https://',
+                                                                                     f'https://{username}:{password}@')
+
+        response = requests.request("GET", complete_url, proxies={
+            'http': proxy,
+            'https': proxy
+        }, headers=headers, data=payload)
+    else:
+        response = requests.request("GET", complete_url, headers=headers, data=payload)
     i = 0
     while i < 10:
         if response.status_code == 200:
