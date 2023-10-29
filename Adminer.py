@@ -74,6 +74,7 @@ class Ui_MainWindow(object):
         self.textEdit_input = QTextEdit(self.centralwidget)
         self.textEdit_input.setObjectName(u"textEdit_input")
         self.textEdit_input.setGeometry(QRect(100, 10, 600, 80))
+        self.textEdit_input.setAcceptRichText(False)
         self.label_4 = QLabel(self.centralwidget)
         self.label_4.setObjectName(u"label_4")
         self.label_4.setGeometry(QRect(520, 460, 81, 30))
