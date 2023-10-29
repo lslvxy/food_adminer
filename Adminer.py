@@ -8,12 +8,14 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 import logging
+import os
 import pathlib
 import sys
 import traceback
 
 from PySide6 import QtGui, QtCore
 
+from ui_dialog import Ui_Dialog
 from utils import parse
 from foodgrabV2 import parse_foodgrabV2
 from foodpandaV2 import parse_foodpandaV2
@@ -152,7 +154,23 @@ class MainWindow(QMainWindow):
     def proxyChange(self):
         checked = self.ui.checkBox_proxy.checkState()
         if checked == Qt.Checked:
-            print("1")
+            dlg = ProxyDlg(self)
+            if dlg.exec():
+                url = dlg.lineEdit_url.text()
+                username = dlg.lineEdit_username.text()
+                password = dlg.lineEdit_pwd.text()
+                homedir = str(pathlib.Path.home())
+                dir_path = os.path.join(homedir, ".config")
+                if not os.path.exists(dir_path):
+                    os.makedirs(dir_path)
+                if url:
+                    with open(os.path.join(dir_path, 'adminer.cfg'), 'w') as f:
+                        f.write(f"url={url}")
+                        f.write('\r\n')
+                        f.write(f"username={username}")
+                        f.write('\r\n')
+                        f.write(f"password={password}")
+                print("Save Proxy Config Success!")
 
     def chooseFile(self):
         homedir = str(pathlib.Path.home())
@@ -246,6 +264,30 @@ class MainWindow(QMainWindow):
         #         self.pushButton.setDisabled(False)
 
         #         print(variables)
+
+
+class ProxyDlg(Ui_Dialog, QDialog):
+    """Employee dialog."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        # Run the .setupUi() method to show the GUI
+        self.setupUi(self)
+        homedir = str(pathlib.Path.home())
+        file_path = os.path.join(homedir, ".config", 'adminer.cfg')
+        if os.path.isfile(file_path):
+            f = open(file_path)
+            lines = f.readlines()
+            for line in lines:
+                kv = line.split("=")
+                if kv[0] == 'url':
+                    self.lineEdit_url.setText(kv[1].strip())
+                if kv[0] == 'username':
+                    self.lineEdit_username.setText(kv[1].strip())
+                if kv[0] == 'password':
+                    self.lineEdit_pwd.setText(kv[1].strip())
+
+            f.close()
 
 
 if __name__ == "__main__":
