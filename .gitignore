@@ -33,3 +33,8 @@ logs
 /Demeter.spec
 __pycache__
 
+
+/Adminer.dist/
+/Adminer.app/
+/Adminer.build/
+/Adminer.zip
