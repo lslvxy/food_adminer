@@ -125,7 +125,7 @@ def parse_foodpandaV2(variables):
     # process_sub_item(item)
 
     # process_final_list(item, conn)
-    process_excel(global_config, conn)
+    process_excel(global_config, conn, variables['export_type'])
 
     return True
 
@@ -797,7 +797,10 @@ def update_sub_ids(product_type, ids_str, conn, batch_no):
         cur.close()
 
 
-def process_excel(item, conn):
+def process_excel(item, conn, export_type):
+    if export_type == 'None':
+        print("Complete without excel!")
+        return
     # if item.total_count != item.run_index + 1:
     #     return
     homedir = str(pathlib.Path.home())
@@ -829,7 +832,9 @@ def process_excel(item, conn):
               "multiple_toppings", "name", "post_code", "rating", "review_number", "weekday_1_opening", "weekday_1_closing", "weekday_2_opening", "weekday_2_closing", "weekday_3_opening",
               "weekday_3_closing", "weekday_4_opening", "weekday_4_closing", "weekday_5_opening", "weekday_5_closing", "weekday_6_opening", "weekday_6_closing", "weekday_7_opening", "weekday_7_closing", "service_fee",
                "service_fee_percentage_amount", "service_tax_percentage_amount", "short_name", "small_order_fee", "vat_percentage_amount", "tag", "tags", "trade_register_number", "legal_name", "address_line_1"
-                FROM store_list where biz_type='food_panda';"""
+                FROM store_list where biz_type='food_panda'"""
+    if export_type == 'Current':
+        product_list_sql += f" and batch_no='{item.batchNo}'"
     cur = conn.cursor()
     try:
         cur.execute(product_list_sql, )
