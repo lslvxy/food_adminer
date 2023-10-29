@@ -269,7 +269,6 @@ def fetch_data(page_url, variables):
         url = ''
         username = ''
         password = ''
-        proxy = url
         homedir = str(pathlib.Path.home())
         file_path = os.path.join(homedir, ".config", 'adminer.cfg')
         if os.path.isfile(file_path):
@@ -287,13 +286,23 @@ def fetch_data(page_url, variables):
         else:
             print("No Proxy Config Found!")
 
+        proxy = url
         if not f'{username}:{password}' in url:
             proxy = url.replace('http://', f'http://{username}:{password}@').replace('https://',
                                                                                      f'https://{username}:{password}@')
 
+        http_proxy = proxy
+        https_proxy = proxy
+        if proxy.startswith('http://'):
+            http_proxy = proxy
+            https_proxy = proxy.replace('http://', 'https://')
+        elif proxy.startswith('https://'):
+            http_proxy = proxy.replace('https://', 'http://')
+            https_proxy = proxy
+
         response = requests.request("GET", complete_url, proxies={
-            'http': proxy,
-            'https': proxy
+            'http': http_proxy,
+            'https': https_proxy
         }, headers=headers, data=payload)
     else:
         response = requests.request("GET", complete_url, headers=headers, data=payload)
