@@ -130,6 +130,17 @@ class EmittingStr(QtCore.QObject):
         QApplication.processEvents()
 
 
+def save_log(all_log, batch_no):
+    homedir = str(pathlib.Path.home())
+    dir_path = os.path.join(homedir, "Aim_menu", "log")
+    if not os.path.exists(dir_path):
+        os.makedirs(dir_path)
+    if all_log:
+        with open(os.path.join(dir_path, f'{batch_no}.log'), 'w') as f:
+            f.write(all_log)
+    pass
+
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -199,8 +210,8 @@ class MainWindow(QMainWindow):
             df = pd.read_excel(file_path, header=None)
             rows = df.values
             for p_idx, r in enumerate(rows):
-                if r[0]:
-                    url_list.add(r[0])
+                if r[0] and str(r[0]).startswith('http'):
+                    url_list.add(str(r[0]))
 
         variables = {}
         for p_idx, page_url in enumerate(url_list):
@@ -216,7 +227,9 @@ class MainWindow(QMainWindow):
         variables['export_type'] = self.ui.comboBox_export.currentText()
         # variables['run_index'] = p_idx
         # variables['total_count'] = len(url_list)
-        parse_foodpandaV2(variables)
+        batch_no = parse_foodpandaV2(variables)
+        all_log = self.ui.textBrowser.toPlainText()
+        save_log(all_log, batch_no)
 
         # else:
         #     variables = parse(page_url)

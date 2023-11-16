@@ -59,6 +59,7 @@ class FoodPandaItem:
 class Config:
     db_path: ''
     batchNo = ''
+    fail_list = set()
 
 
 def parse_foodpandaV2(variables):
@@ -74,11 +75,17 @@ def parse_foodpandaV2(variables):
     for p_idx, page_url in enumerate(url_list):
         variables['run_index'] = p_idx
         variables['total_count'] = len(url_list)
-        print(f'processing: {p_idx + 1}/{len(url_list)}')
+        print(f'processing: {p_idx + 1}/{len(url_list)},url= {page_url}')
         root_data = fetch_data(page_url, variables)
+        if root_data is None:
+            print(f'restaurant url parse fail,url= {page_url}')
+            global_config.fail_list.add(page_url)
+            continue
         store_data = root_data.get('data', None)
 
         if store_data is None:
+            print(f'restaurant data parse fail,url= {page_url}')
+            global_config.fail_list.add(page_url)
             continue
         item = FoodPandaItem()
         item.run_index = variables['run_index']
@@ -126,8 +133,9 @@ def parse_foodpandaV2(variables):
 
     # process_final_list(item, conn)
     process_excel(global_config, conn, variables['export_type'])
+    process_fail_excel(global_config, conn)
 
-    return True
+    return batch_no
 
 
 def clean_data(item):
@@ -256,7 +264,10 @@ def prepare_data(item):
 
 
 def fetch_data(page_url, variables):
-    variables.update(parse(page_url))
+    page_vars = parse(page_url)
+    if len(page_vars) <= 0:
+        return None
+    variables.update(page_vars)
     api_url = 'https://%s.fd-api.com/api/v5/vendors/%s?include=bundles,multiple_discounts&language_id=6&basket_currency=TWD&show_pro_deals=true'
     complete_url = api_url % (variables['country'], variables['id'])
     headers = {
@@ -307,7 +318,7 @@ def fetch_data(page_url, variables):
     else:
         response = requests.request("GET", complete_url, headers=headers, data=payload)
     i = 0
-    while i < 10:
+    while i < 1:
         if response.status_code == 200:
             # print("Request to page, data being pulled")
             break
@@ -315,7 +326,7 @@ def fetch_data(page_url, variables):
         print("Page response failed, retrying")
         time.sleep(5)
         response = requests.request("GET", complete_url, headers=headers, data=payload)
-    if i == 10 and response.status_code != 200:
+    if i >= 1 and response.status_code != 200:
         print("Page response failed, please check network link and try again later")
         return None
     return response.json()
@@ -498,6 +509,13 @@ def save_to_db(item, conn):
             cur.execute(insert_many_sql, product_data_sql_list)
             # print("save origin data:", cur.rowcount)
             conn.commit()
+        else:
+            update_many_sql = """UPDATE "main"."store_list" SET "batch_no" = ?, "biz_type" =?, "web_path" =?, "ID" =?, "code" =?, "accepts_instructions" =?, "address" =?, "address_line2" =?, "budget" =?, "chain_id" =?, "chain_main_vendor_id" =?, "chain_name" =?, "chain_code" =?, "city_id" =?, "city_name" =?, "cuisines_id" =?, "cuisines_name" =?, "cuisines_main" =?, "primary_cuisine_id" =?, "primary_cuisine_name" =?, "primary_cuisine_main" =?, "food_characteristics_id" =?, "food_characteristics_name" =?, "food_characteristics_is_halal" =?, "food_characteristics_is_vegetarian" =?, "customer_phone" =?, "hero_image" =?, "hero_listing_image" =?, "description" =?, "is_active" =?, "is_checkout_comment_enabled" =?, "is_new_until" =?, "is_delivery_enabled" =?, "is_pickup_enabled" =?, "is_preorder_enabled" =?, "is_service_fee_enabled" =?, "is_service_tax_enabled" =?, "is_service_tax_visible" =?, "is_vat_disabled" =?, "is_vat_included_in_product_price" =?, "is_vat_visible" =?, "is_vat_included" =?, "latitude" =?, "location" =?, "logo" =?, "longitude" =?, "food_license_number" =?, "timezone" =?, "minimum_order_amount" =?, "minimum_pickup_time" =?, "multiple_toppings" =?, "name" =?, "post_code" =?, "rating" =?, "review_number" =?, "weekday_1_opening" =?, "weekday_1_closing" =?, "weekday_2_opening" =?, "weekday_2_closing" =?, "weekday_3_opening" =?, "weekday_3_closing" =?, "weekday_4_opening" =?, "weekday_4_closing" =?, "weekday_5_opening" =?, "weekday_5_closing" =?, "weekday_6_opening" =?, "weekday_6_closing" =?, "weekday_7_opening" =?, "weekday_7_closing" =?, "service_fee" =?, "service_fee_percentage_amount" =?, "service_tax_percentage_amount" =?, "short_name" =?, "small_order_fee" =?, "vat_percentage_amount" =?, "tag" =?, "tags" =?, "trade_register_number" =?, "legal_name" =?, "address_line_1" =? WHERE code=?;"""
+            product_data_sql_list2 = product_data_sql_list + (data.get('code'),)
+            cur.execute(update_many_sql, product_data_sql_list2)
+            # print("save origin data:", cur.rowcount)
+            conn.commit()
+
     except Exception as e:
         logging.error(str(e))
         return False
@@ -797,13 +815,28 @@ def update_sub_ids(product_type, ids_str, conn, batch_no):
         cur.close()
 
 
+def process_fail_excel(item, conn):
+    homedir = str(pathlib.Path.home())
+    columns_fail_product = ["failed url"]
+    xlsx_path = os.path.join(homedir, "Aim_menu", "store", f"{item.batchNo}_failed.xlsx")
+    if item.fail_list:
+        all_fail_urls = []
+        for ff in item.fail_list:
+            all_fail_urls.append([ff])
+        df2 = pd.DataFrame(all_fail_urls, columns=columns_fail_product)
+        with pd.ExcelWriter(xlsx_path) as writer:
+            df2.to_excel(writer, sheet_name='failedList', index=False)
+        print("Write failed file to " + xlsx_path)
+
+
 def process_excel(item, conn, export_type):
+    homedir = str(pathlib.Path.home())
     if export_type == 'None':
         print("Complete without excel!")
+
         return
     # if item.total_count != item.run_index + 1:
     #     return
-    homedir = str(pathlib.Path.home())
     # total_category_list = item.total_category_list
 
     all_excel_data_product = [["web_path", "ID", "code", "accepts_instructions", "address", "address_line2", "budget",
@@ -867,6 +900,7 @@ def process_excel(item, conn, export_type):
         "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
     ]
 
+    columns_fail_product = ["failed url"]
     xlsx_path = os.path.join(homedir, "Aim_menu", "store",
                              f"{item.batchNo}.xlsx")
 
