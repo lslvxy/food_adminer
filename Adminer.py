@@ -202,8 +202,8 @@ class MainWindow(QMainWindow):
         if text_urls:
             _list = text_urls.split('\n')
             for item in _list:
-                if item:
-                    url_list.add(item)
+                if item and str(item).startswith('http'):
+                    url_list.add(item.strip())
 
         file_path = self.ui.lineEdit_filepath.text()
         if file_path:
@@ -211,7 +211,7 @@ class MainWindow(QMainWindow):
             rows = df.values
             for p_idx, r in enumerate(rows):
                 if r[0] and str(r[0]).startswith('http'):
-                    url_list.add(str(r[0]))
+                    url_list.add(str(r[0]).strip())
 
         variables = {}
         for p_idx, page_url in enumerate(url_list):

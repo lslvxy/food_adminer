@@ -69,22 +69,23 @@ def parse_foodpandaV2(variables):
     logging.info(f'run batch no:{batch_no}')
     url_list = variables['url_list']
     global_config = Config()
+    global_config.fail_list.clear()
     global_config.batchNo = batch_no
     prepare_data(global_config)
     conn = sqlite3.connect(global_config.db_path)
     for p_idx, page_url in enumerate(url_list):
         variables['run_index'] = p_idx
         variables['total_count'] = len(url_list)
-        print(f'processing: {p_idx + 1}/{len(url_list)},url= {page_url}')
+        print(f'processing: {p_idx + 1}/{len(url_list)}\nurl= {page_url}')
         root_data = fetch_data(page_url, variables)
         if root_data is None:
-            print(f'restaurant url parse fail,url= {page_url}')
+            # print(f'restaurant url parse fail,url= {page_url}')
             global_config.fail_list.add(page_url)
             continue
         store_data = root_data.get('data', None)
 
         if store_data is None:
-            print(f'restaurant data parse fail,url= {page_url}')
+            # print(f'restaurant data parse fail,url= {page_url}')
             global_config.fail_list.add(page_url)
             continue
         item = FoodPandaItem()
@@ -135,6 +136,8 @@ def parse_foodpandaV2(variables):
     process_excel(global_config, conn, variables['export_type'])
     process_fail_excel(global_config, conn)
 
+    global_config.fail_list.clear()
+    del global_config
     return batch_no
 
 
@@ -266,6 +269,7 @@ def prepare_data(item):
 def fetch_data(page_url, variables):
     page_vars = parse(page_url)
     if len(page_vars) <= 0:
+        print(f"Page address not supported,url={page_url}")
         return None
     variables.update(page_vars)
     api_url = 'https://%s.fd-api.com/api/v5/vendors/%s?include=bundles,multiple_discounts&language_id=6&basket_currency=TWD&show_pro_deals=true'
@@ -422,8 +426,8 @@ def save_to_db(item, conn):
     food_characteristics_is_vegetarian = []
     if food_characteristics_list:
         for fc in food_characteristics_list:
-            food_characteristics_id.append(fc.get('id'))
-            food_characteristics_name.append(fc.get('name'))
+            food_characteristics_id.append(str(fc.get('id')))
+            food_characteristics_name.append(str(fc.get('name')))
             food_characteristics_is_halal.append(str(fc.get('is_halal')))
             food_characteristics_is_vegetarian.append(str(fc.get('is_vegetarian')))
 
@@ -877,7 +881,9 @@ def process_excel(item, conn, export_type):
         return False
     finally:
         cur.close()
-
+    if len(all_data_product) <= 0:
+        print('No data export!')
+        return
     for dd in all_data_product:
         all_excel_data_product.append(
             [dd[0], dd[1], dd[2], dd[3], dd[4], dd[5], dd[6], dd[7], dd[8], dd[9],
@@ -900,7 +906,6 @@ def process_excel(item, conn, export_type):
         "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
     ]
 
-    columns_fail_product = ["failed url"]
     xlsx_path = os.path.join(homedir, "Aim_menu", "store",
                              f"{item.batchNo}.xlsx")
 
