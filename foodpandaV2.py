@@ -315,25 +315,50 @@ def fetch_data(page_url, variables):
             http_proxy = proxy.replace('https://', 'http://')
             https_proxy = proxy
 
-        response = requests.request("GET", complete_url, proxies={
-            'http': http_proxy,
-            'https': https_proxy
-        }, headers=headers, data=payload)
+        try:
+            response = requests.request("GET", complete_url, proxies={
+                'http': http_proxy,
+                'https': https_proxy
+            }, headers=headers, data=payload)
+        except Exception as e:
+            response = None
+            print("Proxy addresses not supported")
+        i = 0
+        while i < 1:
+            if response is None or response.status_code == 200:
+                # print("Request to page, data being pulled")
+                break
+            i += 1
+            print("Page response failed, retrying")
+            time.sleep(5)
+            response = requests.request("GET", complete_url, proxies={
+                'http': http_proxy,
+                'https': https_proxy
+            }, headers=headers, data=payload)
+        if i >= 1 and response.status_code != 200:
+            print("Page response failed, please check network link and try again later")
+            return None
+        if response is None:
+            return None
+        return response.json()
+
     else:
         response = requests.request("GET", complete_url, headers=headers, data=payload)
-    i = 0
-    while i < 1:
-        if response.status_code == 200:
-            # print("Request to page, data being pulled")
-            break
-        i += 1
-        print("Page response failed, retrying")
-        time.sleep(5)
-        response = requests.request("GET", complete_url, headers=headers, data=payload)
-    if i >= 1 and response.status_code != 200:
-        print("Page response failed, please check network link and try again later")
-        return None
-    return response.json()
+        i = 0
+        while i < 1:
+            if response is None or response.status_code == 200:
+                # print("Request to page, data being pulled")
+                break
+            i += 1
+            print("Page response failed, retrying")
+            time.sleep(5)
+            response = requests.request("GET", complete_url, headers=headers, data=payload)
+        if i >= 1 and response.status_code != 200:
+            print("Page response failed, please check network link and try again later")
+            return None
+        if response is None:
+            return None
+        return response.json()
 
 
 def compose_images(item):
